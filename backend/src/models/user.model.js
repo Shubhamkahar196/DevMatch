@@ -11,11 +11,13 @@ const UserSchema = new mongoose.Schema({
     email:{
         type:String,
         required: true,
-        unique: true
+        unique: true,
+        index: true
     },
     password:{
         type:String,
         required: true,
+        select: false
 
     },
     phoneNumber:{
@@ -26,9 +28,9 @@ const UserSchema = new mongoose.Schema({
     },
     gender:{
         type:String,
-        enum: ["Male","Female"]
+        enum: ["Male","Female","other"]
     }
 })
 
-const userModel = model("User",UserSchema);
- export default userModel;
+const UserModel = model("User",UserSchema);
+ export default UserModel;
