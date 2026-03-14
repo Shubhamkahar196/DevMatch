@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const signupSchema = z.object({
-  firstName: z.string.min(3, "Character should be at least 3 letter"),
+  firstName: z.string().min(3, "Character should be at least 3 letter"),
   lastName: z.string(),
   email: z.string().email(),
   password: z
