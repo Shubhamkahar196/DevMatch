@@ -7,6 +7,7 @@ import SignupRouter from './routes/auth.route.js'
 import loginRouter from './routes/auth.route.js'
 
 import getProfileRouter from './routes/user.route.js';
+import editProfileRouter from './routes/user.route.js'
 
 dotenv.config();
 const app = express();
@@ -23,6 +24,7 @@ app.use("/auth",loginRouter);
 
 // user routing
 app.use("/user",getProfileRouter);
+app.use("/user",editProfileRouter);
 
 app.listen(PORT,()=>{
     console.log(`Server is running on ${PORT}`);
