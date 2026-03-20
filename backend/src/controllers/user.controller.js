@@ -80,6 +80,45 @@ export const editProfile = async(req,res)=>{
 }
 
 
+// delete profile
+
+export const deleteProfile = async(req,res)=>{
+    try {
+        
+        if(!req.user){
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized user"
+            })
+        }
+
+        const deletedUser = await UserModel.findByIdAndDelete(
+            req.user._id
+        )
+        
+        if(!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+       res.clearCookie("token");
+
+        res.status(200).json({
+            success: true,
+            message: "User delete successfully"
+        })
+    } catch (error) {
+        console.log("Error during deleting profile",error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server problem"
+        })
+    }
+}
+
+
 
 
 

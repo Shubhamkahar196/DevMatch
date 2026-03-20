@@ -3,11 +3,9 @@ import connectDb from './config/db.js';
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 
-import SignupRouter from './routes/auth.route.js'
-import loginRouter from './routes/auth.route.js'
+import authRouter from './routes/auth.route.js'
 
-import getProfileRouter from './routes/user.route.js';
-import editProfileRouter from './routes/user.route.js'
+import userRouter from './routes/user.route.js'
 
 dotenv.config();
 const app = express();
@@ -17,14 +15,14 @@ const PORT = 8000
 app.use(cookieParser());
 app.use(express.json());
 
-// Routing
 
-app.use("/auth",SignupRouter);
-app.use("/auth",loginRouter);
+// auth router
+app.use("/auth",authRouter);
+
 
 // user routing
-app.use("/user",getProfileRouter);
-app.use("/user",editProfileRouter);
+app.use("/user",userRouter);
+
 
 app.listen(PORT,()=>{
     console.log(`Server is running on ${PORT}`);
