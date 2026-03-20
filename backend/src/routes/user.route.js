@@ -4,7 +4,7 @@ import { deleteProfile, editProfile, getProfile } from "../controllers/user.cont
 
 const router = Router();
 
-router.get("/profile",authMiddleware,getProfile);
+router.get("/get-profile",authMiddleware,getProfile);
 router.put("/edit-profile",authMiddleware,editProfile);
 router.delete("/delete-profile",authMiddleware,deleteProfile);
 export default router;
