@@ -1,6 +1,7 @@
 import { success } from "zod";
 import UserModel from "../models/user.model.js";
 import express from 'express';
+import bcrypt from "bcryptjs";
 
 
 // get profile
@@ -42,7 +43,7 @@ export const editProfile = async(req,res)=>{
             "age",
             "phoneNumber",
             "gender",
-            "password"
+            
         ]
 
         const updateData = {};
@@ -53,16 +54,12 @@ export const editProfile = async(req,res)=>{
             }
         })
 
-        // password hash if password want to change the user
-    if(updateData.password){
-        const hashedPassword = await bcrypt.hash(updateData.password,10);
-        updateData.password = hashedPassword;
-    }
+      
 
     const updatedProfile =  await UserModel.findByIdAndUpdate(
         req.user._id,
         updateData,
-        {returnDocument: true}
+        {returnDocument: "after"}
     ).select("-password");
 
     res.status(200).json({
@@ -114,9 +111,6 @@ export const deleteProfile = async(req,res)=>{
         })
     }
 }
-
-
-
 
 
 
