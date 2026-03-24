@@ -1,6 +1,6 @@
 import ConnectionModel from "../models/connectionRequest.model.js";
 
-// send request
+// send request  -> post /request/send/:userId
 export const sendRequest = async (req, res) => {
   try {
     const senderId = req.user._id;
@@ -42,3 +42,25 @@ export const sendRequest = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Get /request
+
+export const getRequest = async (req,res)=>{
+  try {
+     const request = await ConnectionModel.find({
+      receiver: req.user._id,
+      status: "Pending"
+     }).populate("sender","firstName lastName")
+
+     res.json({
+      success: true,
+      data: request,
+     });
+  } catch (error) {
+    console.log("Error while getting getRequest",error);
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
