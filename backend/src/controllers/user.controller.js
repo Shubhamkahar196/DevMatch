@@ -81,7 +81,6 @@ export const editProfile = async(req,res)=>{
 
 export const deleteProfile = async(req,res)=>{
     try {
-        
         if(!req.user){
             return res.status(401).json({
                 success: false,

@@ -1,7 +1,5 @@
 import ConnectionModel from "../models/connectionRequest.model.js";
 
-
-
 // send request
 export const sendRequest = async (req, res) => {
   try {
