@@ -65,6 +65,7 @@ export const getRequest = async (req,res)=>{
 }
 
 // reviewRequest (Accept /Reject)
+// post /request/review/:requestId
 export const reviewRequest = async(req,res)=>{
   try {
     const {status} = req.body;  //accepted /Rejected
@@ -92,9 +93,50 @@ export const reviewRequest = async(req,res)=>{
 
     request.status = status;
     await request.save();
-    
+
   } catch (error) {
     console.log("Error while reviewRequest",error);
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
+// Get connections(Matches)
+// get /request/connections
+
+export const getConnections = async(req,res)=>{
+  try {
+    const connections = await ConnectionModel.find({
+      $or: [
+        {sender: req.user._id, status:"ACCEPTED"},
+        {receiver: req.user._id, status: "ACCEPTED"}
+      ],
+    }).populate("sender receiver", "firstName lastName");
+
+    res.json({
+      success: true,
+      data: connections,
+    })
+  } catch (error) {
+    console.log("Error while getting connections",error);
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
+// get Sent requests
+// get /request/sent
+
+export const getSentRequest = async(req,res)=>{
+  try {
+    const requests = await ConnectionModel.find({
+      sender: req.user._id,
+      status: "PENDING",
+    }).populate("receiver", "FirstName lastName")
+  } catch (error) {
+    
     res.status(500).json({
       message: error.message
     })
