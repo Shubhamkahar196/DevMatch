@@ -64,3 +64,39 @@ export const getRequest = async (req,res)=>{
   }
 }
 
+// reviewRequest (Accept /Reject)
+export const reviewRequest = async(req,res)=>{
+  try {
+    const {status} = req.body;  //accepted /Rejected
+    const requestId = req.params.requestId;
+    
+    if(!["ACCEPTED","REJECTED"].includes(status)){
+      return res.status(400).json({
+        message: "Invalid status",
+      })
+    }
+
+    const request = await ConnectionModel.findById(requestId);
+    if(!request){
+      return res.status(404).json({
+        message: "Request not found",
+      })
+    }
+
+    // only receiver can review
+    if(request.receiver.toString() !== req.user._id.toString()){
+      return res.status(403).json({
+        message: "Not authorized",
+      })
+    }
+
+    request.status = status;
+    await request.save();
+    
+  } catch (error) {
+    console.log("Error while reviewRequest",error);
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
