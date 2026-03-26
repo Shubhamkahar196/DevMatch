@@ -2,6 +2,7 @@ import { success } from "zod";
 import UserModel from "../models/user.model.js";
 import express from 'express';
 import bcrypt from "bcryptjs";
+import ConnectionModel from "../models/connectionRequest.model.js";
 
 
 // get profile
@@ -108,6 +109,50 @@ export const deleteProfile = async(req,res)=>{
             success: false,
             message: "Internal server problem"
         })
+    }
+}
+
+// feed
+
+export const getFeed = async(req,res)=>{
+    try {
+        const loggedId = req.user._id;
+
+        const connections = await ConnectionModel.find({
+            $or:[
+                {senderId: loggedId},
+                {receiverId: loggedId}
+            ]
+        })
+
+         // extract user ids to hide
+    // const hideUsers = new Set();
+    const hideUsers = new Set();
+
+    connections.forEach((conn)=>{
+        hideUsers.add(conn.sender.toString());
+        hideUsers.add(conn.receiver.toString());
+    })
+
+  hideUsers.add(loggedId.toString());
+
+   
+
+    //  find users NOT in hide list
+    const users = await UserModel.find({
+        _id: { $nin: Array.from(hideUsers)}
+    }).select("firstName lastName age gender");
+   
+
+    res.status(200).json({
+      success: true,
+      data: users
+    });
+    } catch (error) {
+        console.log("Error while getting feed",error);
+        res.status(500).json({
+                message: error.message
+            })
     }
 }
 
