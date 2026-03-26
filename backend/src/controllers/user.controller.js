@@ -114,47 +114,54 @@ export const deleteProfile = async(req,res)=>{
 
 // feed
 
-export const getFeed = async(req,res)=>{
-    try {
-        const loggedId = req.user._id;
+export const getFeed = async (req, res) => {
+  try {
+    const loggedInUser = req.user;
 
-        const connections = await ConnectionModel.find({
-            $or:[
-                {senderId: loggedId},
-                {receiverId: loggedId}
-            ]
-        })
+    const page = parseInt(req.query.page) || 1;
+    let limit = parseInt(req.query.limit) || 10;
 
-         // extract user ids to hide
-    // const hideUsers = new Set();
+    limit = limit > 50 ? 50 : limit;
+    const skip = (page - 1) * limit;
+
+    //  find all connections
+    const connections = await ConnectionModel.find({
+      $or: [
+        { sender: loggedInUser._id },
+        { receiver: loggedInUser._id }
+      ]
+    }).select("sender receiver");
+
+    //  build hide list
     const hideUsers = new Set();
 
-    connections.forEach((conn)=>{
-        hideUsers.add(conn.sender.toString());
-        hideUsers.add(conn.receiver.toString());
-    })
+    connections.forEach((conn) => {
+      hideUsers.add(conn.sender.toString());
+      hideUsers.add(conn.receiver.toString());
+    });
 
-  hideUsers.add(loggedId.toString());
+    // also hide self
+    hideUsers.add(loggedInUser._id.toString());
 
-   
-
-    //  find users NOT in hide list
+    //  get feed users
     const users = await UserModel.find({
-        _id: { $nin: Array.from(hideUsers)}
-    }).select("firstName lastName age gender");
-   
+      _id: { $nin: Array.from(hideUsers) }
+    })
+      .select("firstName lastName age gender")
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       success: true,
       data: users
     });
-    } catch (error) {
-        console.log("Error while getting feed",error);
-        res.status(500).json({
-                message: error.message
-            })
-    }
-}
 
+  } catch (err) {
+    console.log("Feed error:", err);
 
-
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
