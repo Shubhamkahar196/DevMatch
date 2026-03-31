@@ -128,11 +128,14 @@ export const login = async (req, res) => {
       expiresIn: "2d",
     });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-    });
+  res.cookie("token", token, {
+  httpOnly: true,
+  sameSite: "lax",
+  secure: false
+});
+
+// password remove
+delete existingUser.password;
 
     res.status(200).json({
       message: "Login successfully",
