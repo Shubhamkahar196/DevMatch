@@ -128,10 +128,16 @@ export const login = async (req, res) => {
       expiresIn: "2d",
     });
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+    });
+
     res.status(200).json({
       message: "Login successfully",
       token,
-      user: existingUser
+      user: existingUser,
     });
   } catch (error) {
     console.log("Error during login", error);
@@ -141,27 +147,25 @@ export const login = async (req, res) => {
   }
 };
 
-
 // logout
 
-export const logOut = async(req,res)=>{
+export const logOut = async (req, res) => {
   try {
     res.clearCookie("token");
 
     res.status(200).json({
       success: true,
-      message: "Logged out successfully"
-    })
+      message: "Logged out successfully",
+    });
   } catch (error) {
-    console.log("Logout error",error);
+    console.log("Logout error", error);
 
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
-
+};
 
 // forgetPassword
 // first enter email -> Verify -> email than -> new Password
@@ -182,7 +186,6 @@ export const checkEmail = async (req, res) => {
       success: true,
       message: "Email verified",
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -191,13 +194,11 @@ export const checkEmail = async (req, res) => {
   }
 };
 
-
-
 export const resetPassword = async (req, res) => {
   try {
     const { email, newPassword } = req.body;
 
-    const user = await UserModel.findOne({ email});
+    const user = await UserModel.findOne({ email });
 
     if (!user) {
       return res.status(404).json({
@@ -215,7 +216,6 @@ export const resetPassword = async (req, res) => {
       success: true,
       message: "Password reset successfully",
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,

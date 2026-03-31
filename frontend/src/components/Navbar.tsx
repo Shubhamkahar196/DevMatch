@@ -3,7 +3,7 @@ import type { RootState } from "../utils/Store";
 
 const Navbar = () => {
   const user = useSelector((store: RootState) => store.user);
-  console.log(user);
+
 
   return (
     <div className="navbar bg-base-300 shadow-sm px-6">
