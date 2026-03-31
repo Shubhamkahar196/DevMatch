@@ -3,7 +3,7 @@ import { createSlice ,type PayloadAction} from "@reduxjs/toolkit";
 // Define a type for your user
 interface UserState {
   id: string;
-  name: string;
+  firstName:string;
 }
 
 const userSlice = createSlice({

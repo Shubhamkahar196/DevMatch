@@ -1,16 +1,20 @@
 import { useSelector } from "react-redux"
 import type { RootState } from "../utils/Store";
 
+
+
 const Navbar = () => {
   const user = useSelector((store: RootState) => store.user)
+  console.log(user);
   return (
    <div className="navbar bg-base-300 shadow-sm px-6">
   <div className="flex-1">
     <a className="btn btn-ghost text-xl">DevMatch</a>
   </div>
   <div className="flex gap-2">
-    <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
+    {/* <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" /> */}
     {user && (<div className="dropdown dropdown-end">
+      <p>Welcome {user.firstName}</p>
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
         <div className="w-10 rounded-full">
           <img
