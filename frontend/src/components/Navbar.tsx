@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../utils/Store";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const user = useSelector((store: RootState) => store.user);
@@ -9,7 +10,7 @@ const Navbar = () => {
     <div className="navbar bg-base-300 shadow-sm px-6">
       
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">DevMatch</a>
+        <Link to="/" className="btn btn-ghost text-xl">DevMatch</Link>
       </div>
 
       <div className="flex gap-4 items-center">
@@ -43,10 +44,10 @@ const Navbar = () => {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
               <li>
-                <a className="justify-between">
+                <Link to="/get-profile" className="justify-between">
                   Profile
                   <span className="badge">New</span>
-                </a>
+                </Link>
               </li>
               <li><a>Settings</a></li>
               <li><a>Logout</a></li>

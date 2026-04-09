@@ -25,6 +25,7 @@ const Login = () => {
     console.log(error)
    }
   }
+  
   return (
     <div className="flex items-center justify-center py-6">
       <fieldset className="fieldset bg-base-300 border-base-300 rounded-box w-xs border p-5">
