@@ -98,7 +98,7 @@ export const login = async (req, res) => {
     const parsedData = loginSchema.safeParse(req.body);
     if (!parsedData.success) {
       return res.status(400).json({
-        message: "Invalid input",
+        message: "Invalid credentials",
       });
     }
 

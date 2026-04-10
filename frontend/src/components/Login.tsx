@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/Slice";
@@ -10,6 +10,7 @@ const Login = () => {
   const [password,setPassword] = useState("Shubham@13")
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [error,setError] = useState("");
 
   const handleLogin = async()=>{
     
@@ -22,6 +23,8 @@ const Login = () => {
     dispatch(addUser(res.data.user));
     navigate("/feed")
    } catch (error) {
+    const err = error as AxiosError;
+    setError(err.message)
     console.log(error)
    }
   }
@@ -36,7 +39,7 @@ const Login = () => {
 
         <label className="label">Password</label>
         <input type="password" value ={password} onChange={(e)=>setPassword(e.target.value)} className="input" placeholder="Password" />
-
+          <p className="text-red-500 font-semibold">{error}</p>
         <button className="btn btn-neutral mt-4" onClick={handleLogin}>Login</button>
       </fieldset>
     </div>
