@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import { Provider } from "react-redux";
 import store from "./utils/Store";
 import Feed from "./components/Feed";
+import Profile from "./components/Profile";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="footer" element={<Footer />} />
           <Route path="feed" element={<Feed/>} />
+          <Route path="profile" element={<Profile/>} />
         </Route>
       </Routes>
     </Router>
