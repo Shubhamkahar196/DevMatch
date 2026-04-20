@@ -22,23 +22,20 @@ const Navbar = () => {
   }
 
   return (
-    <div className="navbar bg-base-300 shadow-sm px-6">
-      
+  
+
+    <div className="navbar fixed top-0 left-0 w-full z-100 bg-base-300 shadow-sm px-6">
       <div className="flex-1">
         <Link to="/" className="btn btn-ghost text-xl">DevMatch</Link>
       </div>
 
       <div className="flex gap-4 items-center">
-
         {user && (
           <div className="dropdown dropdown-end">
-
             <div className="flex items-center gap-2">
-              
-              <p className="font-medium">
+              <p className="font-medium hidden sm:block">
                 Welcome {user.firstName}
               </p>
-
               <div
                 tabIndex={0}
                 role="button"
@@ -51,28 +48,21 @@ const Navbar = () => {
                   />
                 </div>
               </div>
-
             </div>
-
             <ul
-              tabIndex={-1}
+              tabIndex={0}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
               <li>
                 <Link to="/profile" className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
+                  Profile <span className="badge">New</span>
                 </Link>
               </li>
               <li><a>Settings</a></li>
-              <li>
-                <a onClick={handleLogout}>Logout</a>
-                </li>
+              <li><a onClick={handleLogout}>Logout</a></li>
             </ul>
-
           </div>
-        )}
-
+          )}
       </div>
     </div>
   );

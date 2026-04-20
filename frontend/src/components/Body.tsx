@@ -36,7 +36,7 @@ fetchUser();
     
   }, []);
   return (
-    <div>
+    <div className="pt-16">
       <Navbar />
       <Outlet />
       <Footer />
