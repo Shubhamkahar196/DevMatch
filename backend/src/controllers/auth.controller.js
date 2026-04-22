@@ -22,8 +22,8 @@ const signupSchema = z.object({
     .regex(/^\d{10}$/, "Invalid phone format")
     .optional()
     .or(z.literal("")),
-  age: z.string().optional(),
-  gender: z.enum(["Male", "Female", "other"]),
+  age: z.number().optional(),
+  gender: z.enum(["Male", "Female", "Other"]),
 });
 
 const loginSchema = z.object({
@@ -44,6 +44,7 @@ export const Signup = async (req, res) => {
     const parsedData = signupSchema.safeParse(req.body);
 
     if (!parsedData.success) {
+      
       return res.status(400).json({
         message: "Invalid data",
         errors: parsedData.error.errors,
@@ -68,6 +69,7 @@ export const Signup = async (req, res) => {
       email,
       password: hashedPassword,
       phoneNumber,
+      photoUrl,
       age,
       gender,
     });

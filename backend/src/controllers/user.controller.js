@@ -42,6 +42,8 @@ export const editProfile = async(req,res)=>{
             "firstName",
             "lastName",
             "age",
+            "photoUrl",
+            "about",
             "phoneNumber",
             "gender",
             
@@ -147,7 +149,7 @@ export const getFeed = async (req, res) => {
     const users = await UserModel.find({
       _id: { $nin: Array.from(hideUsers) }
     })
-      .select("firstName lastName age gender")
+      .select("firstName lastName age gender photoUrl about")
       .skip(skip)
       .limit(limit);
 

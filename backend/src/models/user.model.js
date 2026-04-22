@@ -1,5 +1,5 @@
 import mongoose, { model } from "mongoose";
-
+import validator from 'validator'
 const UserSchema = new mongoose.Schema({
     firstName:{
         type:String,
@@ -28,9 +28,24 @@ const UserSchema = new mongoose.Schema({
     },
     gender:{
         type:String,
-        enum: ["Male","Female","other"]
-    }
-})
+        enum: ["Male", "Female", "Other"]
+    },
+     photoUrl: {
+      type: String,
+      default: "https://geographyandyou.com/images/user-profile.png",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid Photo URL: " + value);
+        }
+      },
+    },
+    about: {
+      type: String,
+      default: "This is a default about of the user!",
+    },
+},{
+    timestamps: true,
+  })
 
 const UserModel = model("User",UserSchema);
  export default UserModel;
