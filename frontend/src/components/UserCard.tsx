@@ -19,9 +19,9 @@ console.log(user)
   </>
 )}
     
-    <div className="card-actions justify-end">
+    <div className="card-actions justify-end mt-2">
       <button className="btn btn-primary">Ignore</button>
-      <button className="btn btn-primary">Send Request</button>
+      <button className="btn btn-secondry">Intersted</button>
     </div>
   </div>
 </div>
