@@ -41,8 +41,8 @@ const UserCard = ({ user }) => {
   const imageSrc = user?.photoUrl?.trim() !== "" ? user.photoUrl : null;
 
   return (
-    <div className="card bg-base-100 w-full max-w-sm sm:w-96 shadow-sm overflow-hidden rounded-3xl">
-      <figure className="h-64 w-full bg-gray-200 flex items-center justify-center overflow-hidden">
+    <div className="card bg-gray-900  w-full max-w-sm sm:w-96 shadow-sm overflow-hidden rounded-3xl">
+      <figure className="h-64 w-full bg-gray-300 flex items-center justify-center overflow-hidden">
         {imageSrc ? (
           <img
             src={imageSrc}
@@ -51,13 +51,13 @@ const UserCard = ({ user }) => {
           />
         ) : (
           /* Visual fallback if there's no image provided yet */
-          <div className="text-gray-400 font-medium">No Image Provided</div>
+          <div className="text-gray-400  font-medium">No Image Provided</div>
         )}
       </figure>
 
       <div className="card-body p-6">
         
-        <h2 className="card-title text-xl font-bold text-gray-800">
+        <h2 className="card-title text-xl font-bold text-gray-500">
           {user?.firstName} {user?.lastName}
         </h2>
 
@@ -78,11 +78,11 @@ const UserCard = ({ user }) => {
         )}
 
         <div className="card-actions justify-end mt-4 gap-2">
-          <button className="btn btn-ghost border border-gray-300 rounded-full px-5 text-sm font-medium">
+          <button className="btn btn-ghost border hover:bg-red-600 border-gray-300 rounded-full px-5 text-sm font-medium">
             Ignore
           </button>
          
-          <button className="btn btn-secondary rounded-full px-5 text-sm font-medium">
+          <button className="btn btn-secondary hover:bg-blue-600 rounded-full px-5 text-sm font-medium">
             Interested
           </button>
         </div>

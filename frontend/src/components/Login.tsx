@@ -116,7 +116,7 @@ const Login = () => {
             <div className="pt-4">
               <button
                 onClick={handleLogin}
-                className={`w-full rounded-full ${PRIMARY_COLOR} py-3.5 text-lg font-bold text-white transition-all ${HOVER_COLOR} active:scale-[0.98] shadow-md`}
+                className={`w-full rounded-full ${PRIMARY_COLOR} py-3.5 text-lg font-bold text-white cursor-pointer transition-all ${HOVER_COLOR} active:scale-[0.98] shadow-md`}
               >
                 Login
               </button>
@@ -128,7 +128,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/signup")}
-                  className={`font-semibold ${PRIMARY_TEXT_COLOR} hover:underline`}
+                  className={`font-semibold ${PRIMARY_TEXT_COLOR} cursor-pointer hover:underline`}
                 >
                   Register
                 </button>

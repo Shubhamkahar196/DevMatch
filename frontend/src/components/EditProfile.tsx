@@ -44,6 +44,7 @@ const EditProfile = ({ user }) => {
 
   const saveProfile = async () => {
   setError("");
+  console.log("Profile save button click")
   try {
     const res = await axios.put(
       BASE_URL + "/user/edit-profile",
@@ -78,7 +79,7 @@ const EditProfile = ({ user }) => {
     
 
   return (
-    <div>
+    <>
     <div className="min-h-screen w-full bg-violet-300 py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-center font-sans overflow-x-hidden">
       <div className="w-full max-w-6xl flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8 lg:gap-12">
         
@@ -207,13 +208,14 @@ const EditProfile = ({ user }) => {
       </div>
     </div>
  {showToast && (
-        <div className="toast toast-top toast-center ">
+        <div className="toast toast-top toast-center mt-11 ">
           <div className="alert alert-success shadow-lg rounded-2xl text-white font-medium bg-emerald-500 border-none">
             <span>Profile updated successfully!</span>
+           
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
