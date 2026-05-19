@@ -3,12 +3,15 @@ import userReducer from './Slice'
 // import feedReduer from './FeedSlice'
 import feedReduer from './feedSlice'
 import connectionReducer from './connectionSlice'
+import requestReducer from "./requestSlice"
 
  const store = configureStore({
     reducer: {
         user: userReducer,
         feed: feedReduer,
-        connections: connectionReducer
+        connections: connectionReducer,
+        requests: requestReducer
+        
     }
 })
 
