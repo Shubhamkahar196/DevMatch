@@ -4,6 +4,8 @@
 
 import axios from "axios";
 import BASE_URL from "../utils/constant";
+import { useDispatch } from "react-redux";
+import { removeFeed } from "../utils/feedSlice";
 
 // console.log(user) 
 //   return (
@@ -37,19 +39,39 @@ import BASE_URL from "../utils/constant";
 
 
 const UserCard = ({ user }) => {
+  const {_id,firstName,lastName,photoUrl,age,gender,about} = user
   console.log(user);
 
+  const dispatch = useDispatch();
+
   // Fix: If photoUrl is missing or an empty string, set it to null 
-  // or a fallback placeholder URL so the browser doesn't throw a warning.
+
   const imageSrc = user?.photoUrl?.trim() !== "" ? user.photoUrl : null;
 
-  const handleSendRequest = async (status,userId)=>{
-    try {
-      const res = await axios.post(BASE_URL + "/request/sent")
-    } catch (error) {
-      console.log(error.message);
-    }
+ const handleSendRequest = async (
+  status,
+  userId
+) => {
+  try {
+
+    const res = await axios.post(
+      BASE_URL + "/request/send/" + userId,
+      { status },
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log(res.data);
+
+    dispatch(removeFeed(userId));
+
+  } catch (error) {
+
+    console.log(error.message);
+
   }
+};
 
   return (
     <div className="card bg-gray-900  w-full max-w-sm sm:w-96 shadow-sm overflow-hidden rounded-3xl">
@@ -89,13 +111,19 @@ const UserCard = ({ user }) => {
         )}
 
         <div className="card-actions justify-end mt-4 gap-2">
-          <button className="btn btn-ghost border hover:bg-red-600 border-gray-300 rounded-full px-5 text-sm font-medium">
-            Ignore
-          </button>
-         
-          <button className="btn btn-secondary hover:bg-blue-600 rounded-full px-5 text-sm font-medium">
-            Interested
-          </button>
+         <button
+  onClick={() => dispatch(removeFeed(_id))}
+  className="btn btn-ghost border hover:bg-red-600 border-gray-300 rounded-full px-5 text-sm font-medium"
+>
+  Ignore
+</button>
+
+<button
+  onClick={() => handleSendRequest("PENDING", _id)}
+  className="btn btn-secondary hover:bg-blue-600 rounded-full px-5 text-sm font-medium"
+>
+  Interested
+</button>
         </div>
       </div>
     </div>

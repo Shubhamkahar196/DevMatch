@@ -18,8 +18,8 @@ const Feed = () => {
     if(feed) return;
     try {
       const res = await axios.get(BASE_URL + "/user/feed",{withCredentials:true});
-      console.log(res);
-      dispatch(addFeed(res.data.data))
+      
+      dispatch(addFeed(res?.data?.data))
     } catch (error) {
       const err = error as AxiosError;
       setError(err);
@@ -32,6 +32,19 @@ const Feed = () => {
   useEffect(()=>{
     getFeed();
   },[])
+
+
+  if (!feed) return;
+
+  if (feed.length <= 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] px-4">
+        <h1 className="text-xl md:text-2xl font-semibold text-base-content/60 bg-base-200 px-6 py-4 rounded-2xl shadow-sm">
+          No new User Found
+        </h1>
+      </div>
+    )
+  }
 
    
 
