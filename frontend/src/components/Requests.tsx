@@ -9,19 +9,42 @@ const Requests = () => {
   const requests = useSelector((store: RootState) => store.requests)
   const dispatch = useDispatch()
 
-  const reviewRequest = async (status: "ACCEPTED" | "REJECTED", _id: string) => {
-    try {
-      const res = await axios.post(
-        BASE_URL + "/request/review/" + status + "/" + _id,
-        {},
-        { withCredentials: true }
-      )
-      console.log(res)
-      dispatch(removeRequest(res.data.data))
-    } catch (error: any) {
-      console.log(error.message)
-    }
+  // const reviewRequest = async (status: "ACCEPTED" | "REJECTED", _id: string) => {
+  //   try {
+  //     const res = await axios.post(
+  //       BASE_URL + "/request/review/" + status + "/" + _id,
+  //       {},
+  //       { withCredentials: true }
+  //     )
+  //     console.log(res)
+  //     dispatch(removeRequest(res.data.data))
+  //   } catch (error: any) {
+  //     console.log(error.message)
+  //   }
+  // }
+
+  const reviewRequest = async (
+  status: "ACCEPTED" | "REJECTED",
+  _id: string
+) => {
+  try {
+
+    const res = await axios.post(
+      BASE_URL + "/request/review/" + _id,
+      { status },
+      { withCredentials: true }
+    );
+
+    console.log(res.data);
+
+    dispatch(removeRequest(_id));
+
+  } catch (error: any) {
+
+    console.log(error.message);
+
   }
+};
 
   const fetchRequest = async () => {
     try {

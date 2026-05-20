@@ -66,6 +66,7 @@ export const getRequest = async (req,res)=>{
 
 // reviewRequest (Accept /Reject)
 // post /request/review/:requestId
+
 export const reviewRequest = async(req,res)=>{
   try {
     const {status} = req.body;  //accepted /Rejected
@@ -94,6 +95,11 @@ export const reviewRequest = async(req,res)=>{
     request.status = status;
     await request.save();
 
+    res.status(200).json({
+  message: "Request reviewed successfully",
+  data: request,
+});
+
   } catch (error) {
     console.log("Error while reviewRequest",error);
     res.status(500).json({
@@ -105,40 +111,87 @@ export const reviewRequest = async(req,res)=>{
 // Get connections(Matches)
 // get /request/connections
 
-export const getConnections = async(req,res)=>{
+// export const getConnections = async(req,res)=>{
+//   try {
+//     const connections = await ConnectionModel.find({
+//       $or: [
+//         {sender: req.user._id, status:"ACCEPTED"},
+//         {receiver: req.user._id, status: "ACCEPTED"}
+//       ],
+//     }).populate("sender receiver", "firstName lastName");
+
+//     res.json({
+//       success: true,
+//       data: connections,
+//     })
+//   } catch (error) {
+//     console.log("Error while getting connections",error);
+//     res.status(500).json({
+//       message: error.message
+//     })
+//   }
+// } 
+
+
+export const getConnections = async (req, res) => {
   try {
+
     const connections = await ConnectionModel.find({
       $or: [
-        {sender: req.user._id, status:"ACCEPTED"},
-        {receiver: req.user._id, status: "ACCEPTED"}
+        { sender: req.user._id, status: "ACCEPTED" },
+        { receiver: req.user._id, status: "ACCEPTED" }
       ],
-    }).populate("sender receiver", "firstName lastName");
+    }).populate(
+      "sender receiver",
+      "firstName lastName photoUrl age gender about"
+    );
 
-    res.json({
+    const data = connections.map((row) => {
+
+      if (row.sender._id.toString() === req.user._id.toString()) {
+        return row.receiver;
+      }
+
+      return row.sender;
+    });
+
+    res.status(200).json({
       success: true,
-      data: connections,
-    })
+      data,
+    });
+
   } catch (error) {
-    console.log("Error while getting connections",error);
+
+    console.log("Error while getting connections", error);
+
     res.status(500).json({
-      message: error.message
-    })
+      message: error.message,
+    });
+
   }
-}
+};
 
 // get Sent requests
 // get /request/sent
 
-export const getSentRequest = async(req,res)=>{
+export const getSentRequest = async (req, res) => {
   try {
+
     const requests = await ConnectionModel.find({
       sender: req.user._id,
       status: "PENDING",
-    }).populate("receiver", "FirstName lastName")
+    }).populate("receiver", "firstName lastName");
+
+    res.status(200).json({
+      success: true,
+      data: requests,
+    });
+
   } catch (error) {
-    
+
     res.status(500).json({
-      message: error.message
-    })
+      message: error.message,
+    });
+
   }
-}
+};

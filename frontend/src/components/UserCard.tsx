@@ -2,6 +2,9 @@
 
 // const UserCard = ({user}) => { 
 
+import axios from "axios";
+import BASE_URL from "../utils/constant";
+
 // console.log(user) 
 //   return (
 //     <div className="card bg-base-100 w-96 shadow-sm">
@@ -39,6 +42,14 @@ const UserCard = ({ user }) => {
   // Fix: If photoUrl is missing or an empty string, set it to null 
   // or a fallback placeholder URL so the browser doesn't throw a warning.
   const imageSrc = user?.photoUrl?.trim() !== "" ? user.photoUrl : null;
+
+  const handleSendRequest = async (status,userId)=>{
+    try {
+      const res = await axios.post(BASE_URL + "/request/sent")
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 
   return (
     <div className="card bg-gray-900  w-full max-w-sm sm:w-96 shadow-sm overflow-hidden rounded-3xl">
