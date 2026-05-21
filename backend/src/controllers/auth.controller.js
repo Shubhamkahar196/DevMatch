@@ -23,7 +23,7 @@ const signupSchema = z.object({
     .optional()
     .or(z.literal("")),
   age: z.number().optional(),
-  gender: z.enum(["Male", "Female", "Other"]),
+  gender: z.enum(["Male", "Female", "Other"]).optional(),
 });
 
 const loginSchema = z.object({
@@ -39,58 +39,158 @@ const loginSchema = z.object({
 });
 
 // signup
+// export const Signup = async (req, res) => {
+//   try {
+//     const parsedData = signupSchema.safeParse(req.body);
+
+//     if (!parsedData.success) {
+      
+//       return res.status(400).json({
+//         message: "Invalid data",
+//         errors: parsedData.error.errors,
+//       });
+//     }
+
+//     const { firstName, lastName, email, password, phoneNumber, age, gender } =
+//       parsedData.data;
+
+//     //  const user = await UserModel.findOne({email});
+//     //  if(user){
+//     //     return res.status(400).json({
+//     //         message: "User already registered with this email "
+//     //     })
+//     //  }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     const newUser = await UserModel.create({
+//       firstName,
+//       lastName,
+//       email,
+//       password: hashedPassword,
+//       phoneNumber,
+//       photoUrl,
+//       age,
+//       gender,
+//     });
+
+//     const userResponse = newUser.toObject();
+//     delete userResponse.password;
+
+//     const token = await userResponse.save();
+
+//     req.cookie("token",token,{
+//       expires:  new Date(Date.now() * 8  *360000)
+//     })
+
+//     res.status(200).json({
+//       message: "User signup successfully!",
+//       newUser: userResponse,
+//     });
+//   } catch (error) {
+//     if (error.code === 11000) {
+//       return res.status(400).json({
+//         message: "Email already registered",
+//       });
+//     }
+//     console.log("Error during signup", error);
+//     res.status(500).json({
+//       message: "Internal server problem",
+//     });
+//   }
+// };
+
+
+
 export const Signup = async (req, res) => {
   try {
+
+
     const parsedData = signupSchema.safeParse(req.body);
 
     if (!parsedData.success) {
-      
       return res.status(400).json({
+        success: false,
         message: "Invalid data",
         errors: parsedData.error.errors,
       });
     }
 
-    const { firstName, lastName, email, password, phoneNumber, age, gender } =
-      parsedData.data;
+   
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      age,
+      gender,
+    } = parsedData.data;
 
-    //  const user = await UserModel.findOne({email});
-    //  if(user){
-    //     return res.status(400).json({
-    //         message: "User already registered with this email "
-    //     })
-    //  }
+    // Check if user already exists
+    const existingUser = await UserModel.findOne({ email });
 
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists with this email",
+      });
+    }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create user
     const newUser = await UserModel.create({
       firstName,
       lastName,
       email,
       password: hashedPassword,
       phoneNumber,
-      photoUrl,
       age,
       gender,
     });
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: newUser._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Save token in cookie
+     res.cookie("token", token, {
+  httpOnly: true,
+  sameSite: "lax",
+  secure: false,
+      expires: new Date(
+        Date.now() + 7 * 24 * 60 * 60 * 1000
+      ),
+    });
+
+ 
+
+    // Remove password before sending response
     const userResponse = newUser.toObject();
+
     delete userResponse.password;
 
-    res.status(200).json({
-      message: "User signup successfully!",
-      newUser: userResponse,
+    // Final response
+    res.status(201).json({
+      success: true,
+      message: "Signup successful",
+      user: userResponse,
     });
+
   } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({
-        message: "Email already registered",
-      });
-    }
+
     console.log("Error during signup", error);
+
     res.status(500).json({
-      message: "Internal server problem",
+      success: false,
+      message: "Internal server error",
     });
+
   }
 };
 

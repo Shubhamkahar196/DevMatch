@@ -15,8 +15,13 @@ const INPUT_BORDER_COLOR = "border-[#D1D5DB]"; // Standard grey border
 const HOVER_COLOR = "hover:bg-[#5A4BCF]"; // Darker purple hover state
 
 const Login = () => {
-  const [email, setEmail] = useState("testing123@gmail.com");
-  const [password, setPassword] = useState("Shubham@13");
+  // const [email, setEmail] = useState("testing123@gmail.com");
+  const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("Shubham@13");
+  const [password, setPassword] = useState("");
+  const [firstName,setFirstName] = useState("");
+  const [lastName,setLastName] = useState("");
+  const [isLoginForm,setIsLoginForm] = useState(false)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -30,13 +35,27 @@ const Login = () => {
       );
 
       dispatch(addUser(res.data.user));
-      navigate("/feed");
+      navigate("/");
     } catch (error) {
       const err = error as AxiosError;
       setError(err.message);
       console.log(error);
     }
   };
+
+  const handleSingup = async ()=>{
+    try {
+      const res = await axios.post(BASE_URL + "/auth/signup",{firstName,lastName,email,password},
+        {withCredentials: true}
+      )
+       dispatch(addUser(res.data.data));
+      return navigate("/profile")
+    } catch (error) {
+      const err = error as AxiosError;
+      setError(err.message);
+      console.log(error);
+    }
+  }
 
   return (
    
@@ -67,6 +86,33 @@ const Login = () => {
           </div>
 
           <div className="space-y-6">
+            { !isLoginForm && <>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#111111] uppercase tracking-wider">
+                First Name
+              </label>
+              <input
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Enter your First Name"
+                className={`w-full rounded-full ${INPUT_BORDER_COLOR} px-5 py-3 text-sm text-[#111111] placeholder-[#A1A1A1] outline-none transition focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#A29BFE]/30`}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#111111] uppercase tracking-wider">
+                Last Name
+              </label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Enter your Last Name"
+                className={`w-full rounded-full ${INPUT_BORDER_COLOR} px-5 py-3 text-sm text-[#111111] placeholder-[#A1A1A1] outline-none transition focus:border-[#6C5CE7] focus:ring-2 focus:ring-[#A29BFE]/30`}
+              />
+            </div>
+            </>}
+
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-[#111111] uppercase tracking-wider">
                 Email
@@ -97,7 +143,7 @@ const Login = () => {
               <p className="text-xs font-medium text-[#EF4444]">{error}</p>
             )}
 
-            <div className="flex items-center justify-between text-xs font-medium">
+            {/* <div className="flex items-center justify-between text-xs font-medium">
               <label className="flex items-center space-x-2 cursor-pointer">
                 <input
                   type="checkbox"
@@ -111,28 +157,31 @@ const Login = () => {
               >
                 Forgot password
               </button>
-            </div>
+            </div> */}
 
             <div className="pt-4">
               <button
-                onClick={handleLogin}
+                onClick={isLoginForm ? handleLogin : handleSingup}
                 className={`w-full rounded-full ${PRIMARY_COLOR} py-3.5 text-lg font-bold text-white cursor-pointer transition-all ${HOVER_COLOR} active:scale-[0.98] shadow-md`}
               >
-                Login
+               {isLoginForm ? "Login" : "SingUp"} 
               </button>
             </div>
 
             <div className="pt-8 text-center text-xs font-medium">
-              <p className="text-[#666666]">
-                Don't have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => navigate("/signup")}
-                  className={`font-semibold ${PRIMARY_TEXT_COLOR} cursor-pointer hover:underline`}
-                >
-                  Register
-                </button>
-              </p>
+             <p className="text-[#666666]">
+  {isLoginForm
+    ? "Don't have an account?"
+    : "Already have an account?"}{" "}
+
+  <button
+    type="button"
+    onClick={() => setIsLoginForm(!isLoginForm)}
+    className={`font-semibold ${PRIMARY_TEXT_COLOR} cursor-pointer hover:underline`}
+  >
+    {isLoginForm ? "Sign Up" : "Login"}
+  </button>
+</p>
             </div>
           </div>
         </div>

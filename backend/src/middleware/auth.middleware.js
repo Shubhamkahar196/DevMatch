@@ -23,7 +23,7 @@ const authMiddleware = async (req, res, next) => {
     
 
     // find user
-    const user = await UserModel.findById(decoded.id).select("-password");
+    const user = await UserModel.findById(decoded.userId).select("-password");
 
     if (!user) {
       return res.status(401).json({
