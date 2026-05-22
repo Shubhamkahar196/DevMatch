@@ -49,8 +49,8 @@ export const getRequest = async (req,res)=>{
   try {
      const request = await ConnectionModel.find({
       receiver: req.user._id,
-      status: "Pending"
-     }).populate("sender","firstName lastName")
+      status: "PENDING"
+     }).populate("sender","firstName lastName photoUrl age gender about")
 
      res.json({
       success: true,

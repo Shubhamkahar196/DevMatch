@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import BASE_URL from "../utils/constant";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+
 import type { RootState } from "../utils/Store";
 import { useEffect, useState } from "react";
 
@@ -12,19 +12,19 @@ const Feed = () => {
   const feed = useSelector((store: RootState) => store.feed);
   const dispatch = useDispatch();
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  
 
   const getFeed = async () => {
     if(feed) return;
     try {
-      const res = await axios.get(BASE_URL + "/user/feed",{withCredentials:true});
+      const res = await axios.get(BASE_URL + "/user/feed",{withCredentials: true});
       
       dispatch(addFeed(res?.data?.data))
     } catch (error) {
       const err = error as AxiosError;
-      setError(err);
+      setError(err.message);;
       console.log("error in feed", err);
-      navigate("/login");
+       
     }
   };
 

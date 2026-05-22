@@ -39,73 +39,9 @@ const loginSchema = z.object({
 });
 
 // signup
-// export const Signup = async (req, res) => {
-//   try {
-//     const parsedData = signupSchema.safeParse(req.body);
-
-//     if (!parsedData.success) {
-      
-//       return res.status(400).json({
-//         message: "Invalid data",
-//         errors: parsedData.error.errors,
-//       });
-//     }
-
-//     const { firstName, lastName, email, password, phoneNumber, age, gender } =
-//       parsedData.data;
-
-//     //  const user = await UserModel.findOne({email});
-//     //  if(user){
-//     //     return res.status(400).json({
-//     //         message: "User already registered with this email "
-//     //     })
-//     //  }
-
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     const newUser = await UserModel.create({
-//       firstName,
-//       lastName,
-//       email,
-//       password: hashedPassword,
-//       phoneNumber,
-//       photoUrl,
-//       age,
-//       gender,
-//     });
-
-//     const userResponse = newUser.toObject();
-//     delete userResponse.password;
-
-//     const token = await userResponse.save();
-
-//     req.cookie("token",token,{
-//       expires:  new Date(Date.now() * 8  *360000)
-//     })
-
-//     res.status(200).json({
-//       message: "User signup successfully!",
-//       newUser: userResponse,
-//     });
-//   } catch (error) {
-//     if (error.code === 11000) {
-//       return res.status(400).json({
-//         message: "Email already registered",
-//       });
-//     }
-//     console.log("Error during signup", error);
-//     res.status(500).json({
-//       message: "Internal server problem",
-//     });
-//   }
-// };
-
-
 
 export const Signup = async (req, res) => {
   try {
-
-
     const parsedData = signupSchema.safeParse(req.body);
 
     if (!parsedData.success) {
@@ -116,16 +52,8 @@ export const Signup = async (req, res) => {
       });
     }
 
-   
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      phoneNumber,
-      age,
-      gender,
-    } = parsedData.data;
+    const { firstName, lastName, email, password, phoneNumber, age, gender } =
+      parsedData.data;
 
     // Check if user already exists
     const existingUser = await UserModel.findOne({ email });
@@ -152,23 +80,18 @@ export const Signup = async (req, res) => {
     });
 
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: newUser._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    // Save token in cookie
-     res.cookie("token", token, {
-  httpOnly: true,
-  sameSite: "lax",
-  secure: false,
-      expires: new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000
-      ),
+    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
     });
 
- 
+    // Save token in cookie
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     // Remove password before sending response
     const userResponse = newUser.toObject();
@@ -181,16 +104,13 @@ export const Signup = async (req, res) => {
       message: "Signup successful",
       user: userResponse,
     });
-
   } catch (error) {
-
     console.log("Error during signup", error);
 
     res.status(500).json({
       success: false,
       message: "Internal server error",
     });
-
   }
 };
 
@@ -230,14 +150,15 @@ export const login = async (req, res) => {
       expiresIn: "2d",
     });
 
-  res.cookie("token", token, {
-  httpOnly: true,
-  sameSite: "lax",
-  secure: false
-});
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+    });
 
-// password remove
-delete existingUser.password;
+    // password remove
+    delete existingUser.password;
 
     res.status(200).json({
       message: "Login successfully",

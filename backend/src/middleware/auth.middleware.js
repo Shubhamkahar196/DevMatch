@@ -1,16 +1,12 @@
-
-
 import jwt from "jsonwebtoken";
-import UserModel from '../models/user.model.js';
+import UserModel from "../models/user.model.js";
 
 const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.header("Authorization");
     const token =
-      req.cookies?.token ||
-      (authHeader ? authHeader.split(" ")[1] : null);
+      req.cookies?.token || (authHeader ? authHeader.split(" ")[1] : null);
 
-   
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -19,11 +15,12 @@ const authMiddleware = async (req, res, next) => {
     }
 
     // verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+
+    const userId = decoded._id || decoded.id;
 
     // find user
-    const user = await UserModel.findById(decoded.userId).select("-password");
+    const user = await UserModel.findById(userId).select("-password");
 
     if (!user) {
       return res.status(401).json({
@@ -36,7 +33,6 @@ const authMiddleware = async (req, res, next) => {
     req.user = user;
 
     next();
-
   } catch (error) {
     console.log("Auth middleware error:", error.message);
 

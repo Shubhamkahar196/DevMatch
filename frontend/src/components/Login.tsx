@@ -21,7 +21,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [firstName,setFirstName] = useState("");
   const [lastName,setLastName] = useState("");
-  const [isLoginForm,setIsLoginForm] = useState(false)
+  const [isLoginForm,setIsLoginForm] = useState(true)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -35,7 +35,8 @@ const Login = () => {
       );
 
       dispatch(addUser(res.data.user));
-      navigate("/");
+      return navigate("/");
+      
     } catch (error) {
       const err = error as AxiosError;
       setError(err.message);
@@ -49,7 +50,7 @@ const Login = () => {
         {withCredentials: true}
       )
        dispatch(addUser(res.data.data));
-      return navigate("/profile")
+       return navigate("/profile");
     } catch (error) {
       const err = error as AxiosError;
       setError(err.message);
