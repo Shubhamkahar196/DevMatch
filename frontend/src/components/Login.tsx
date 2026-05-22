@@ -165,7 +165,7 @@ const Login = () => {
                 onClick={isLoginForm ? handleLogin : handleSingup}
                 className={`w-full rounded-full ${PRIMARY_COLOR} py-3.5 text-lg font-bold text-white cursor-pointer transition-all ${HOVER_COLOR} active:scale-[0.98] shadow-md`}
               >
-               {isLoginForm ? "Login" : "SingUp"} 
+               {isLoginForm ? "Login" : "Signup"} 
               </button>
             </div>
 
@@ -180,7 +180,7 @@ const Login = () => {
     onClick={() => setIsLoginForm(!isLoginForm)}
     className={`font-semibold ${PRIMARY_TEXT_COLOR} cursor-pointer hover:underline`}
   >
-    {isLoginForm ? "Sign Up" : "Login"}
+    {isLoginForm ? "Signup" : "Login"}
   </button>
 </p>
             </div>
