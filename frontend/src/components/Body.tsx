@@ -1,6 +1,6 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
@@ -12,7 +12,7 @@ import type { RootState } from "../utils/Store";
 
 const Body = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const userData = useSelector((store: RootState) => store.user);
 
   const fetchUser = async () => {
@@ -27,7 +27,7 @@ const Body = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const axiosErr = err as any;
       if (axiosErr?.response?.status === 401) {
-        // navigate("/login");
+        navigate("/login");
       }
       console.error(err);
     }
