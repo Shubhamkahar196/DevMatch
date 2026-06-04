@@ -25,6 +25,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 
+
 // auth router
 app.use("/auth",authRouter);
 // user routing

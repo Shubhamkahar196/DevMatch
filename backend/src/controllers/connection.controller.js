@@ -1,6 +1,8 @@
 import ConnectionModel from "../models/connectionRequest.model.js";
-
+import UserModel from "../models/user.model.js";
+import sendEmail from '../utils/sendEmail.js'
 // send request  -> post /request/send/:userId
+
 export const sendRequest = async (req, res) => {
   try {
     const senderId = req.user._id;
@@ -33,13 +35,23 @@ export const sendRequest = async (req, res) => {
       status: status || "PENDING",
     });
 
+   const receiver = await UserModel.findById(receiverId);
+
+const emailRes = await sendEmail.run(
+  "New Connection Request",
+  `${req.user.firstName} sent a connection request to ${receiver.firstName}`
+);
+    console.log(emailRes)
+
     res.status(201).json({
       success: true,
       data: request,
     });
 
   } catch (error) {
+     console.error(error);
     res.status(500).json({ message: error.message });
+    
   }
 };
 

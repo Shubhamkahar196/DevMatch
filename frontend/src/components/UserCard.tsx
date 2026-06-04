@@ -117,7 +117,7 @@ const UserCard = ({
             )}
 
             {/* About */}
-            <p className="text-sm text-gray-600 italic mt-1 break-words">
+            <p className="text-sm text-gray-600 italic mt-1 wrap-break-words">
 
               {user.about ||
                 "No bio description provided yet."}
