@@ -27,12 +27,13 @@ const createSendEmailCommand = (toAddress, fromAddress,subject,body) => {
 };
 
 const run = async (subject,body) => {
-
+// dynamic - so add emailId
 
   const sesClient = getSesClient();
 
   const sendEmailCommand = createSendEmailCommand(
     "ksk185246@gmail.com",
+    // write above to emailID
     "ksk@devmatch.website",
     subject,
     body
