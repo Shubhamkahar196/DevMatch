@@ -16,6 +16,7 @@ const app = express();
 
 connectDb();
 const PORT = 8000
+import("./utils/cron-job.js")
 
 app.use(cors({
     origin: "http://localhost:5173",
