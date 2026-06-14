@@ -41,8 +41,11 @@ import Feed from "./components/Feed";
 import Profile from "./components/Profile";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsOfService from "./components/TermsOfService";
 
 function App() {
+
   return (
     <Provider store={store}>
       <Router>
@@ -54,6 +57,9 @@ function App() {
             <Route path="connections" element={<Connections />} />
             <Route path="requests" element={<Requests />} />
             <Route path="footer" element={<Footer />} />
+            <Route path="privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="terms-of-service" element={<TermsOfService />} />
+
           </Route>
         </Routes>
       </Router>

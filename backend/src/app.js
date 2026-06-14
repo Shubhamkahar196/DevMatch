@@ -10,9 +10,11 @@ import cookieParser from 'cookie-parser'
 import authRouter from './routes/auth.route.js'
 import userRouter from './routes/user.route.js'
 import connectionRouter from './routes/connection.route.js'
+import legalRouter from './routes/legal.route.js'
 
 
 const app = express();
+
 
 connectDb();
 const PORT = 8000
@@ -33,6 +35,9 @@ app.use("/auth",authRouter);
 app.use("/user",userRouter);
 // connectionrouter
 app.use("/request",connectionRouter);
+// legal routing
+app.use("/api", legalRouter);
+
 
 app.listen(PORT,()=>{
     console.log(`Server is running on ${PORT}`);
