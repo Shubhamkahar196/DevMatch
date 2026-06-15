@@ -1,9 +1,79 @@
-import React from 'react'
+import React from 'react';
 
 const Premium = () => {
   return (
-    <div>Premium</div>
-  )
-}
+    <div className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto gap-6 p-6 items-center justify-center min-h-[500px]">
+      
+      {/* Silver Membership Card */}
+      <div className="card bg-base-200 border border-base-300 shadow-xl rounded-2xl p-8 flex flex-col justify-between h-[420px] w-full max-w-sm transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+        <div className="text-center">
+          <h2 className="font-extrabold text-2xl text-base-content/80 uppercase tracking-wider">Silver</h2>
+          <div className="my-4">
+            <span className="text-4xl font-bold">299Rs</span>
+            <span className="text-base-content/60 text-sm"> / 3 Mos</span>
+          </div>
+        </div>
+        
+        <ul className="space-y-3 my-6 text-sm md:text-base">
+          <li className="flex items-center gap-2">
+            <span className="text-secondary">✓</span> Chat with other people
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="text-secondary">✓</span> 100 Connection Requests / day
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="text-secondary">✓</span> Blue Tick verification
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="text-secondary">✓</span> 3 Months Access
+          </li>
+        </ul>
+        
+        <button className="btn btn-secondary btn-block rounded-xl font-bold tracking-wide shadow-lg shadow-secondary/20">
+          Get Silver
+        </button>
+      </div>
 
-export default Premium
+      {/* Divider */}
+      <div className="divider lg:divider-horizontal font-bold text-sm text-base-content/40 my-2 lg:my-0">OR</div>
+
+      {/* Gold Membership Card (Featured/Popular) */}
+      <div className="card bg-linear-to-br from-base-300 to-base-200 border-2 border-primary shadow-2xl rounded-2xl p-8 flex flex-col justify-between h-[450px] w-full max-w-sm relative transition-all duration-300 hover:scale-105">
+        {/* Popular Tag */}
+        <span className="absolute -top-3 right-6 badge badge-primary font-semibold py-3 px-4 shadow-md">
+          POPULAR
+        </span>
+
+        <div className="text-center">
+          <h2 className="font-extrabold text-2xl text-primary uppercase tracking-wider">Gold</h2>
+          <div className="my-4">
+            <span className="text-4xl font-bold">699Rs</span>
+            <span className="text-base-content/60 text-sm"> / 12 Mos</span>
+          </div>
+        </div>
+        
+        <ul className="space-y-3 my-6 text-sm md:text-base">
+          <li className="flex items-center gap-2 font-medium">
+            <span className="text-primary">✦</span> Chat with other people
+          </li>
+          <li className="flex items-center gap-2 font-medium">
+            <span className="text-primary">✦</span> Infinite Requests / day
+          </li>
+          <li className="flex items-center gap-2 font-medium">
+            <span className="text-primary">✦</span> Premium Blue Tick
+          </li>
+          <li className="flex items-center gap-2 font-medium">
+            <span className="text-primary">✦</span> 12 Months Access
+          </li>
+        </ul>
+        
+        <button className="btn btn-primary btn-block rounded-xl font-bold tracking-wide shadow-lg shadow-primary/30 animate-pulse-slow">
+          Get Gold 🎉
+        </button>
+      </div>
+      
+    </div>
+  );
+};
+
+export default Premium;
