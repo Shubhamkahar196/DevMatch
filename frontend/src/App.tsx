@@ -43,6 +43,7 @@ import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
+import Premium from "./components/Premium";
 
 function App() {
 
@@ -59,7 +60,7 @@ function App() {
             <Route path="footer" element={<Footer />} />
             <Route path="privacy-policy" element={<PrivacyPolicy />} />
             <Route path="terms-of-service" element={<TermsOfService />} />
-
+            <Route path="premium" element={<Premium/>} />
           </Route>
         </Routes>
       </Router>
