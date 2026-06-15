@@ -11,7 +11,7 @@ import authRouter from './routes/auth.route.js'
 import userRouter from './routes/user.route.js'
 import connectionRouter from './routes/connection.route.js'
 import legalRouter from './routes/legal.route.js'
-
+import paymentRouter from './routes/payment.route.js'
 
 const app = express();
 
@@ -37,7 +37,8 @@ app.use("/user",userRouter);
 app.use("/request",connectionRouter);
 // legal routing
 app.use("/api", legalRouter);
-
+// payment router
+app.use("/payment",paymentRouter)
 
 app.listen(PORT,()=>{
     console.log(`Server is running on ${PORT}`);
