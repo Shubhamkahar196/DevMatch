@@ -38,6 +38,9 @@ const paymentSchema = new mongoose.Schema(
     notes: {
       firstName: String,
       lastName: String,
+       membershipType: {
+        type: String,
+      },
     },
   },
   { timestamps: true }

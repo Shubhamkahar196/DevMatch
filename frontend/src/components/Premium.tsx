@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import Razorpay from 'razorpay';
+
 
 import BASE_URL from '../utils/constant';
 
@@ -37,10 +37,10 @@ const {amount,keyId,currency,notes,orderId} = order.data;
       rzp.open();
   }
   return (
-    <div className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto gap-6 p-6 items-center justify-center min-h-[500px]">
+    <div className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto gap-6 p-6 items-center justify-center min-h-125">
       
       {/* Silver Membership Card */}
-      <div className="card bg-base-200 border border-base-300 shadow-xl rounded-2xl p-8 flex flex-col justify-between h-[420px] w-full max-w-sm transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+      <div className="card bg-base-200 border border-base-300 shadow-xl rounded-2xl p-8 flex flex-col justify-between h-105 w-full max-w-sm transition-all duration-300 hover:scale-105 hover:shadow-2xl">
         <div className="text-center">
           <h2 className="font-extrabold text-2xl text-base-content/80 uppercase tracking-wider">Silver</h2>
           <div className="my-4">
@@ -73,7 +73,7 @@ const {amount,keyId,currency,notes,orderId} = order.data;
       <div className="divider lg:divider-horizontal font-bold text-sm text-base-content/40 my-2 lg:my-0">OR</div>
 
       {/* Gold Membership Card (Featured/Popular) */}
-      <div className="card bg-linear-to-br from-base-300 to-base-200 border-2 border-primary shadow-2xl rounded-2xl p-8 flex flex-col justify-between h-[450px] w-full max-w-sm relative transition-all duration-300 hover:scale-105">
+      <div className="card bg-linear-to-br from-base-300 to-base-200 border-2 border-primary shadow-2xl rounded-2xl p-8 flex flex-col justify-between h-112.5 w-full max-w-sm relative transition-all duration-300 hover:scale-105">
         {/* Popular Tag */}
         <span className="absolute -top-3 right-6 badge badge-primary font-semibold py-3 px-4 shadow-md">
           POPULAR
