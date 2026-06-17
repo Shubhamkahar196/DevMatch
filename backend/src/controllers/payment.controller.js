@@ -79,10 +79,18 @@ export const webhooks = async (req,res)=>{
     payment.status = paymentDetails.status;
     await payment.save();
 
-    const user = await UserModel.findOne({_id: payment.userId});
-    user.isPremium = true;
-    user.membershipType = payment.notes.membershipType;
-    await user.save();
+   const user = await UserModel.findOne({
+  _id: payment.userId
+});
+
+console.log("User before update:", user);
+
+user.isPremium = true;
+user.membershipType = payment.notes.membershipType;
+
+await user.save();
+
+console.log("User after update:", user);
     // update the user as premium
 
 
