@@ -2,7 +2,7 @@ import { getRazorpayInstance } from "../utils/razorpay.js";
 import Payment from "../models/payment.model.js";
 import { membershipAmount } from "../utils/constants.js";
 
-import {validateWebhookSignature} from 'razorpay/dist/utils/razorpay-utils'
+import {validateWebhookSignature} from 'razorpay/dist/utils/razorpay-utils.js'
 import UserModel from "../models/user.model.js";
 
 // making payment
