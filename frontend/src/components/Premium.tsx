@@ -1,10 +1,19 @@
 import axios from 'axios';
-import React from 'react';
-
-
+import React, { useState } from 'react';
 import BASE_URL from '../utils/constant';
 
 const Premium = () => {
+  const [isPremium,setIsUserPremium] = useState(false);
+
+  const verifyPremiumUser = async ()=>{
+    const res = await axios.get(BASE_URL + "/payment/verify",{
+      withCredentials: true,
+    });
+
+    if(res.data.isPremium){
+      setIsUserPremium(true);
+    }
+  }
 
   const handleBuyClick = async(type)=>{
 
@@ -31,13 +40,15 @@ const {amount,keyId,currency,notes,orderId} = order.data;
         theme: {
           color: '#F37254'
         },
+        handler: verifyPremiumUser
       };
 
     const rzp = new (window as any).Razorpay(options);
       rzp.open();
   }
-  return (
-    <div className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto gap-6 p-6 items-center justify-center min-h-125">
+  return  isPremium ? (
+    "You are already a premium user" ) : (
+      <div className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto gap-6 p-6 items-center justify-center min-h-125">
       
       {/* Silver Membership Card */}
       <div className="card bg-base-200 border border-base-300 shadow-xl rounded-2xl p-8 flex flex-col justify-between h-105 w-full max-w-sm transition-all duration-300 hover:scale-105 hover:shadow-2xl">
@@ -107,7 +118,8 @@ const {amount,keyId,currency,notes,orderId} = order.data;
         </button>
       </div>
       
-    </div>
+    </div> 
+
   );
 };
 
