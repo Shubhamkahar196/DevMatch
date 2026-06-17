@@ -30,6 +30,14 @@ const UserSchema = new mongoose.Schema({
         type:String,
         enum: ["Male", "Female", "Other"]
     },
+    isPremium:{
+type: Boolean,
+default: false,
+    },
+    membershipType:{
+        type:String
+    },
+    // membershipValidity  added in futures
      photoUrl: {
       type: String,
       default: "https://geographyandyou.com/images/user-profile.png",
