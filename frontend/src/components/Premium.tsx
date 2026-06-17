@@ -1,6 +1,19 @@
+import axios from 'axios';
 import React from 'react';
+import BASE_URL from '../utils/constant';
 
 const Premium = () => {
+
+  const handleBuyClick = async(type)=>{
+
+    const order= await axios.post(BASE_URL + "/payment/create", {
+      membership: type,
+    },{withCredentials: true});
+
+
+
+    // 
+  }
   return (
     <div className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto gap-6 p-6 items-center justify-center min-h-[500px]">
       
@@ -29,7 +42,7 @@ const Premium = () => {
           </li>
         </ul>
         
-        <button className="btn btn-secondary btn-block rounded-xl font-bold tracking-wide shadow-lg shadow-secondary/20">
+        <button onClick={()=>handleBuyClick("silver")}  className="btn btn-secondary btn-block rounded-xl font-bold tracking-wide shadow-lg shadow-secondary/20">
           Get Silver
         </button>
       </div>
@@ -67,7 +80,7 @@ const Premium = () => {
           </li>
         </ul>
         
-        <button className="btn btn-primary btn-block rounded-xl font-bold tracking-wide shadow-lg shadow-primary/30 animate-pulse-slow">
+        <button onClick={()=>handleBuyClick("gold")} className="btn btn-primary btn-block rounded-xl font-bold tracking-wide shadow-lg shadow-primary/30 animate-pulse-slow">
           Get Gold 🎉
         </button>
       </div>

@@ -1,61 +1,49 @@
-// import express from 'express';
-// // import razorpayInstance from '../utils/razorpay.js'
-// import { getRazorpayInstance } from "../utils/razorpay.js";
-
-// const razorpay = getRazorpayInstance();
-
-
-// export const createOrder = async(req,res)=>{
-    
-//     try{
-
-//   const order= await razorpay.orders.create({
-//   "amount": 50000,
-//   "currency": "INR",
-//   "receipt": "receipt#1",
-//   "partial_payment": true,
-//   "notes": {
-//     firstName: "value3",
-//     lastName: "value2",
-//     membershipType: "silver"
-//   }
- 
-// })
-
-// //   save it in my db
-// console.log(order)
-// // return back my order details to frontend
-// res.json({order})
-
-//     }catch(err){
-// console.log(err)
-//     }
-// }
-
-
 import { getRazorpayInstance } from "../utils/razorpay.js";
+import Payment from "../models/payment.model.js";
+import { membershipAmount } from "../utils/constants.js";
 
 export const createOrder = async (req, res) => {
   try {
     const razorpay = getRazorpayInstance();
+    
+    const {membershipType} = req.body
+    const {firstName,lastName,email} = req.user;
 
     const order = await razorpay.orders.create({
-      amount: 50000,
+      amount: membershipAmount[membershipType] * 100,
       currency: "INR",
       receipt: "receipt#1",
       partial_payment: true,
       notes: {
-        firstName: "value3",
-        lastName: "value2",
-        membershipType: "silver",
+        firstName,
+        lastName,
+        email,
+        membershipType: membershipType,
       },
     });
 
-    console.log(order);
+    const payment = new Payment({
+      userId: req.user._id,
+      orderId: order.id,
+      status: order.status,
+      amount: order.amount,
+      currency: order.currency,
+      receiptId: order.receipt,
+      notes: order.notes,
+    });
 
-    res.json({ order });
+    const savedPayment = await payment.save();
+
+    res.status(201).json({
+      success: true,
+      data: savedPayment,
+    });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: err.message });
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
