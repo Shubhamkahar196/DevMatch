@@ -108,9 +108,11 @@ export const webhooks = async (req,res)=>{
 
 // payment verify
 export const paymentVerify = async(req,res)=>{
-  const user = req.user;
+  const user = req.user.toJSON;
   if(user.isPremium){
-    return res.json({isPremium: true})
+    // return res.json({isPremium: true})
+    return res.json({...user})
   }
-  return res.json({isPremium: false})
+  // return res.json({isPremium: false})
+  return res.json({...user})
 }
