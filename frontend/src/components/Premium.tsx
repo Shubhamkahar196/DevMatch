@@ -33,7 +33,7 @@ const {amount,keyId,currency,notes,orderId} = order.data;
         },
       };
 
-    const rzp = new window.Razorpay(options);
+    const rzp = new (window as any).Razorpay(options);
       rzp.open();
   }
   return (
