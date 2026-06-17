@@ -71,7 +71,7 @@ export const webhooks = async (req,res)=>{
         msg: "webhook signature is invalid"
       })
     }
-     
+     console.log("Webhook valid:", isWebhookValid);
     // update my payment status in DB
     const paymentDetails = req.body.payload.payment.entity;
 
@@ -101,18 +101,28 @@ export const webhooks = async (req,res)=>{
   })
 
   } catch (error) {
-    return res.status(500).json({msg: err.meesage})
+   console.error(error);
+
+  return res.status(500).json({
+    msg: error.message
+  });
   }
 }
 
 
 // payment verify
 export const paymentVerify = async(req,res)=>{
-  const user = req.user.toJSON;
-  if(user.isPremium){
-    // return res.json({isPremium: true})
-    return res.json({...user})
-  }
-  // return res.json({isPremium: false})
-  return res.json({...user})
+  // const user = req.user.toJSON;
+  const user = req.user;
+  // if(user.isPremium){
+  //   // return res.json({isPremium: true})
+  //   return res.json({...user})
+  // }
+  // // return res.json({isPremium: false})
+  // return res.json({...user})
+
+   return res.json({
+    isPremium: user.isPremium,
+    membershipType: user.membershipType
+  });
 }
