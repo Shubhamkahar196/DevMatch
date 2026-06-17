@@ -1,5 +1,7 @@
 import axios from 'axios';
 import React from 'react';
+import Razorpay from 'razorpay';
+
 import BASE_URL from '../utils/constant';
 
 const Premium = () => {
@@ -7,12 +9,32 @@ const Premium = () => {
   const handleBuyClick = async(type)=>{
 
     const order= await axios.post(BASE_URL + "/payment/create", {
-      membership: type,
+      membershipType: type,
     },{withCredentials: true});
 
 
+const {amount,keyId,currency,notes,orderId} = order.data;
+    // it should open the razor pay dialog box
+    const options = {
+        key: keyId, // Replace with your Razorpay key_id
+        amount: amount, // Amount is in currency subunits.
+        currency: currency,
+        name: 'DevMatch',
+        description: 'Connect with other developer',
+        order_id: orderId, // This is the order_id created in the backend
+        // callback_url: 'http://localhost:3000/payment-success', // Your success URL
+        prefill: {
+          name: notes.firstName + " " + notes.lastName,
+          email: notes.email,
+          // contact: '9999999999'
+        },
+        theme: {
+          color: '#F37254'
+        },
+      };
 
-    // 
+    const rzp = new window.Razorpay(options);
+      rzp.open();
   }
   return (
     <div className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto gap-6 p-6 items-center justify-center min-h-[500px]">

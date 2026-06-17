@@ -33,11 +33,13 @@ export const createOrder = async (req, res) => {
     });
 
     const savedPayment = await payment.save();
-
-    res.status(201).json({
-      success: true,
-      data: savedPayment,
-    });
+      
+    res.json({...savedPayment.toJSON(),keyId: process.env.RAZORPAY_KEY_ID})
+    // res.status(201).json({
+    //   success: true,
+    //   data: savedPayment,
+    //   keyId: process.env.RAZORPAY_KEY_ID
+    // });
   } catch (err) {
     console.error(err);
 
