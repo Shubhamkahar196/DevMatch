@@ -1,8 +1,20 @@
-import Razorpay from 'razorpay'
+// import Razorpay from 'razorpay'
 
-var instance = new Razorpay({
-  key_id: 'YOUR_KEY_ID',
-  key_secret: 'YOUR_KEY_SECRET',
-});
+// var instance = new Razorpay({
+//   key_id:process.env.RAZORPAY_KEY_ID,
+//   key_secret:process.env.RAZORPAY_KEY_SECRET,
+  
+// });
 
-export default instance
+import Razorpay from "razorpay";
+
+export const getRazorpayInstance = () => {
+  console.log("KEY:", process.env.RAZORPAY_KEY_ID);
+
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+};
+
+export default getRazorpayInstance
