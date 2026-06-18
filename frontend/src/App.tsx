@@ -44,6 +44,7 @@ import Requests from "./components/Requests";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import Premium from "./components/Premium";
+import Chat from "./components/Chat";
 
 function App() {
 
@@ -61,6 +62,7 @@ function App() {
             <Route path="privacy-policy" element={<PrivacyPolicy />} />
             <Route path="terms-of-service" element={<TermsOfService />} />
             <Route path="premium" element={<Premium/>} />
+            <Route path="chat/:targetUserId" element={<Chat/>}/>
           </Route>
         </Routes>
       </Router>
