@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../utils/connectionSlice";
 import type { RootState } from "../utils/Store";
+import { Link } from "react-router-dom";
 
 const Connections = () => {
   const connections = useSelector(
@@ -100,7 +101,13 @@ const Connections = () => {
                 <p className="text-sm text-base-content/70 line-clamp-2 break-words">
                   {about || "No bio provided."}
                 </p>
+
+                
               </div>
+              <Link to={"/chat/" + _id}>
+              
+              <button  className="btn btn-ghost border bg-blue-900 hover:bg-red-600 border-gray-300 rounded-full px-5 text-sm font-medium"> chat</button>
+              </Link>
             </div>
           );
         })}
