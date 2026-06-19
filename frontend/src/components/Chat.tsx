@@ -1,33 +1,32 @@
-// import React from 'react'
-// import { useParams } from 'react-router-dom'
-
-// const Chat = () => {
-//     const {targetUserId} = useParams();
-//   return (
-//     <div className="w-1/2 mx-auto border border-gray">
-      
-//       <h1 className="p-5 border-b border-gray-400">Chat</h1>
-//       <div>
-// {/* display message */}
-//       </div>
-
-//       <div>
-
-//       </div>
-
-//     </div>
-//   )
-// }
-
-// export default Chat
-
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { createSocketConnection } from '../utils/socket';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../utils/Store';
 
 const Chat = ({ messages = [], onSendMessage, currentUserId }) => {
   const { targetUserId } = useParams();
   const [messageText, setMessageText] = React.useState('');
+  const user = useSelector((store: RootState) => store.user);
+   const userId = user?._id
+
+  useEffect(()=>{
+
+    if(!userId){
+      return 
+    }
+
+const socket = createSocketConnection()
+// current userId and targetUserId(other user )
+// as soon as the page loaded the socket connection is made and joinchat event is emitted
+  socket.emit("joinChat",{
+    firstName: user?.firstName,
+    userId,targetUserId})
+
+  return ()=>{
+    socket.disconnect();
+  }
+  },[userId,targetUserId])
 
   const handleSubmit = (e) => {
     e.preventDefault();

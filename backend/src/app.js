@@ -7,7 +7,7 @@ import connectDb from './config/db.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
 import http from 'http'
-import socket from 'socket.io'
+
 
 import authRouter from './routes/auth.route.js'
 import userRouter from './routes/user.route.js'
@@ -45,7 +45,7 @@ app.use("/payment",paymentRouter)
 
 // socket 
 const server = http.createServer(app)
-initializeSocket();
+initializeSocket(server);
 // const io = socket(server, {
 //     cors: {
 //         origin: 'http://localhost:5173'
