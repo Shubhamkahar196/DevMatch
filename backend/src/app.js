@@ -6,12 +6,15 @@ import connectDb from './config/db.js';
 
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
+import http from 'http'
+import socket from 'socket.io'
 
 import authRouter from './routes/auth.route.js'
 import userRouter from './routes/user.route.js'
 import connectionRouter from './routes/connection.route.js'
 import legalRouter from './routes/legal.route.js'
 import paymentRouter from './routes/payment.route.js'
+import initializeSocket from './utils/socket.js';
 
 const app = express();
 
@@ -40,7 +43,20 @@ app.use("/api", legalRouter);
 // payment router
 app.use("/payment",paymentRouter)
 
+// socket 
+const server = http.createServer(app)
+initializeSocket();
+// const io = socket(server, {
+//     cors: {
+//         origin: 'http://localhost:5173'
+//     }
+// });
 
-app.listen(PORT,()=>{
+// io.on("connection",(socket)=> {
+
+// })
+
+// remove app and write server when you make socket
+server.listen(PORT,()=>{
     console.log(`Server is running on ${PORT}`);
 })
