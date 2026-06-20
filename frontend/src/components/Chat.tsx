@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { createSocketConnection } from '../utils/socket';
 import { useSelector } from 'react-redux';
@@ -6,7 +6,8 @@ import type { RootState } from '../utils/Store';
 
 const Chat = ({ messages = [], onSendMessage, currentUserId }) => {
   const { targetUserId } = useParams();
-  const [messageText, setMessageText] = React.useState('');
+  const [messageText, setMessageText] = useState('');
+  // const [newMessage,setNewMessage] = useState("");
   const user = useSelector((store: RootState) => store.user);
    const userId = user?._id
 
@@ -22,11 +23,19 @@ const socket = createSocketConnection()
   socket.emit("joinChat",{
     firstName: user?.firstName,
     userId,targetUserId})
-
+   
+    socket.on("messageReceived",({firstName ,text})=>{
+      setMessageText([...messageText,{firstName,text}])
+    })
   return ()=>{
     socket.disconnect();
   }
   },[userId,targetUserId])
+
+  const sendMessage = ()=>{
+    const socket = createSocketConnection();
+    socket.emit("sendMessage",{firstName: user.firstName,userId,targetUserId,text:messageText})
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,7 +59,8 @@ const socket = createSocketConnection()
           </div>
           <div>
             <h2 className="text-white font-medium text-lg leading-tight">
-              User ID: {targetUserId || "Chat Partner"}
+              {/* User ID: {targetUserId || "Chat Partner"} */}
+              {user.firstName}
             </h2>
             <p className="text-indigo-100 text-xs">Active</p>
           </div>
@@ -62,6 +72,7 @@ const socket = createSocketConnection()
         {messages.length === 0 ? (
           <div className="h-full flex items-center justify-center text-gray-400 text-sm">
             No messages yet. Say hello!
+            {messageText}
           </div>
         ) : (
           messages.map((msg) => {
@@ -107,6 +118,7 @@ const socket = createSocketConnection()
         
         <button
           type="submit"
+          onClick={sendMessage}
           className="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full shadow-md hover:shadow-lg transition-all transform active:scale-95 flex items-center justify-center"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 transform rotate-45 -mt-0.5 -ml-0.5">
@@ -121,3 +133,4 @@ const socket = createSocketConnection()
 };
 
 export default Chat;
+
