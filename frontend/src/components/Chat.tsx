@@ -1,21 +1,74 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axios from "axios";
+
 import type { RootState } from "../utils/Store";
 import { createSocketConnection } from "../utils/socket";
+import BASE_URL from "../utils/constant";
+
+type ChatMessage = {
+  senderId?: string;
+  firstName?: string;
+  text: string;
+  timestamp: any;
+};
 
 const Chat = () => {
   const { targetUserId } = useParams();
 
   const user = useSelector((store: RootState) => store.user);
-
   const userId = user?._id;
 
   const [messageText, setMessageText] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Array<{ senderId: string; firstName: string; text: string; timestamp: any }>>([]);
 
-  const socketRef = useRef<any>(null);
+  const socketRef = useRef<ReturnType<typeof import("socket.io-client").io> | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Fetch old messages
+  type BackendMessage = {
+    senderId?: { _id: string; firstName?: string };
+    text: string;
+    createdAt?: string;
+  };
+
+  const fetchMessages = async () => {
+    try {
+      const res = await axios.get(
+        BASE_URL + "/chat/" + targetUserId,
+        {
+          withCredentials: true,
+        }
+      );
+
+      const rawMessages = res.data?.chat?.messages as BackendMessage[] | undefined;
+
+      const chatMessages = (rawMessages ?? []).map((msg) => ({
+        senderId: msg.senderId?._id,
+        firstName: msg.senderId?.firstName ?? "",
+        text: msg.text,
+        timestamp: msg.createdAt,
+      }));
+
+      setMessages(chatMessages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, [targetUserId]);
+
+  // Auto scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
+
+  // Socket Connection
   useEffect(() => {
     if (!userId || !targetUserId) return;
 
@@ -29,14 +82,14 @@ const Chat = () => {
 
     socketRef.current.on(
       "messageReceived",
-      ({ firstName, text, senderId }) => {
+      ({ firstName, senderId, text, timestamp }) => {
         setMessages((prev) => [
           ...prev,
           {
             senderId,
             firstName,
             text,
-            timestamp: new Date(),
+            timestamp: timestamp || new Date(),
           },
         ]);
       }
@@ -66,77 +119,88 @@ const Chat = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto my-6 h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
-      
-      {/* Modern Gradient Header */}
-      <div className="px-6 py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white flex items-center justify-between shadow-sm">
-        <div className="flex items-center space-x-3.5">
-          <div className="relative">
-            <div className="w-10 h-10 bg-white/20 text-white font-bold rounded-full flex items-center justify-center border border-white/30 backdrop-blur-sm tracking-wider">
-              {user?.firstName ? user.firstName.substring(0, 2).toUpperCase() : "CH"}
-            </div>
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full"></span>
-          </div>
-          <div>
-            <h2 className="font-semibold text-base leading-tight tracking-wide">
-              {user?.firstName}
-            </h2>
-            <p className="text-indigo-200 text-xs mt-0.5 font-medium">Active Session</p>
-          </div>
-        </div>
+    <div className="max-w-3xl mx-auto my-6 h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
+
+      {/* Header */}
+      <div className="px-6 py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white">
+        <h2 className="font-semibold text-lg">
+          {user?.firstName}
+        </h2>
+        <p className="text-xs text-indigo-200">
+          Active
+        </p>
       </div>
 
-      {/* Modern Message Threads Area */}
-      <div className="flex-1 overflow-y-auto p-6 bg-slate-50 space-y-4">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 bg-slate-50">
+
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-slate-300">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9a8.25 8.25 0 0 1-4.875-1.577l-4.237 1.146.12-.127c.432-.456.852-.98 1.192-1.523C2.316 14.842 2 13.455 2 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-            </svg>
-            <p className="text-sm font-medium">No messages yet. Say hello!</p>
+          <div className="h-full flex justify-center items-center text-slate-400">
+            No messages yet
           </div>
         ) : (
           messages.map((msg, index) => {
-            const isMe = msg.senderId === userId;
+            const isMe =
+              msg.senderId?.toString() ===
+              userId?.toString();
 
             return (
               <div
                 key={index}
-                className={`flex ${
-                  isMe ? "justify-end" : "justify-start"
-                }`}
+                className={`chat ${
+                  isMe ? "chat-end" : "chat-start"
+                } mb-3`}
               >
+                <div className="chat-header text-xs text-gray-500">
+                  {msg.firstName}
+                </div>
+
                 <div
-                  className={`max-w-[75%] px-4 py-2.5 rounded-2xl shadow-sm text-sm leading-relaxed break-words transition-all ${
+                  className={`chat-bubble ${
                     isMe
-                      ? "bg-indigo-600 text-white rounded-br-none"
-                      : "bg-white text-slate-800 border border-slate-200/60 rounded-bl-none"
+                      ? "chat-bubble-primary"
+                      : "chat-bubble-neutral"
                   }`}
                 >
                   {msg.text}
+                </div>
+
+                <div className="chat-footer text-xs opacity-60">
+                  {msg.timestamp
+                    ? new Date(
+                        msg.timestamp
+                      ).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : ""}
                 </div>
               </div>
             );
           })
         )}
+
+        <div ref={messagesEndRef}></div>
       </div>
 
-      {/* Modern Input Bar */}
+     
       <form
         onSubmit={handleSubmit}
-        className="p-4 bg-white border-t border-slate-100 flex items-center space-x-3"
+        className="p-4 border-t bg-white flex gap-2"
       >
         <input
           type="text"
+          placeholder="Type a message..."
           value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
-          placeholder="Type message..."
-          className="flex-1 bg-slate-50 border border-slate-200 rounded-full px-4 py-3 text-sm transition-all text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white"
+          onChange={(e) =>
+            setMessageText(e.target.value)
+          }
+          className="flex-1 border border-slate-300 text-black rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
 
         <button
           type="submit"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-full shadow-md hover:shadow-lg font-medium text-sm transition-all transform active:scale-95"
+          className="px-5 py-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700"
         >
           Send
         </button>

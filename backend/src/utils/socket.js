@@ -43,7 +43,12 @@ const initializeSocket = (server)=>{
                 })
 
                 await chat.save();
-                io.to(roomId).emit("messageReceived", {firstName,text})
+                io.to(roomId).emit("messageReceived", {
+      firstName,
+      senderId: userId,
+      text,
+      timestamp: new Date(),
+    });
                 console.log("message recievied",firstName + text);
             } catch (error) {
                 console.log(error);
