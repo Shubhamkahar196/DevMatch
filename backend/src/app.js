@@ -15,6 +15,7 @@ import connectionRouter from './routes/connection.route.js'
 import legalRouter from './routes/legal.route.js'
 import paymentRouter from './routes/payment.route.js'
 import initializeSocket from './utils/socket.js';
+import chatRouter from './routes/chat.route.js'
 
 const app = express();
 
@@ -42,6 +43,8 @@ app.use("/request",connectionRouter);
 app.use("/api", legalRouter);
 // payment router
 app.use("/payment",paymentRouter)
+// chat router
+app.use("/",chatRouter);
 
 // socket 
 const server = http.createServer(app)
