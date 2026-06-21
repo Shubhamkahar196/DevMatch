@@ -44,7 +44,7 @@ app.use("/api", legalRouter);
 // payment router
 app.use("/payment",paymentRouter)
 // chat router
-app.use("/",chatRouter);
+app.use("/chat",chatRouter);
 
 // socket 
 const server = http.createServer(app)
