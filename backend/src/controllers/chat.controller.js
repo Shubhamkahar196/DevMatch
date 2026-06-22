@@ -6,12 +6,17 @@ export const chatController = async(req,res)=>{
     const userId = req.user._id;
 
     try {
-        let chat = await chatModel.findOne({
-            participants: {$all:[userId,targetUserId]},
-        }).populate({
-            path: "messages.senderId",
-            select: "firstName"
-        })
+       let chat = await chatModel.findOne(
+  {
+    participants: { $all: [userId, targetUserId] }
+  },
+  {
+    messages: { $slice: -5 }
+  }
+).populate({
+  path: "messages.senderId",
+  select: "firstName"
+});
 
         if(!chat){
             chat = new chatModel({
