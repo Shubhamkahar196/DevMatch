@@ -2,6 +2,8 @@ import http from 'http'
 import { Server } from "socket.io";
 import chatModel from '../models/chat.model.js';
 import socketAuth from '../middleware/socketAuth.middleware.js';
+import ConnectionModel from '../models/connectionRequest.model.js';
+
 const initializeSocket = (server)=>{
     const io = new Server(server,{
         cors: {
@@ -38,7 +40,26 @@ io.use(socketAuth);
             try {
                 const userId = socket.user._id;
                 const firstName = socket.user.firstName;
-                
+
+                // friend check
+                const connection = await ConnectionModel.findOne({
+                    $or: [
+                        {
+                        sender: userId,
+                        receiver: targetUserId,
+                        status: "ACCEPTED",
+                    },{
+                        sender: targetUserId,
+                        receiver: userId,
+                        status: "ACCEPTED",
+                    }]
+                })
+                 if (!connection) {
+      return socket.emit("messageError", {
+        message: "You are not connected with this user",
+      });
+    }
+
                 const roomId =[userId,targetUserId].sort().join("_");
                 let chat = await chatModel.findOne({
                     participants: {$all: [userId,targetUserId]}

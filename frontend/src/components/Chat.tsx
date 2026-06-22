@@ -103,7 +103,13 @@ socketRef.current.on("connect_error", (err) => {
         ]);
       }
     );
+       socketRef.current.on("messageError", (data) => {
+    console.log(data.message);
 
+  
+
+    alert(data.message);
+  });
     return () => {
       socketRef.current?.disconnect();
     };
