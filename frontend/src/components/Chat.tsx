@@ -68,21 +68,30 @@ const Chat = () => {
     });
   }, [messages]);
 
+ 
+
   // Socket Connection
   useEffect(() => {
     if (!userId || !targetUserId) return;
 
     socketRef.current = createSocketConnection();
+ socketRef.current.on("connect", () => {
+  console.log("Connected");
+});
 
+socketRef.current.on("connect_error", (err) => {
+  console.log(err.message);
+});
     socketRef.current.emit("joinChat", {
-      firstName: user?.firstName,
-      userId,
+      // firstName: user?.firstName,
+      // userId,
       targetUserId,
     });
 
     socketRef.current.on(
       "messageReceived",
       ({ firstName, senderId, text, timestamp }) => {
+ console.log("Message Received:", text);
         setMessages((prev) => [
           ...prev,
           {
@@ -104,8 +113,8 @@ const Chat = () => {
     if (!messageText.trim()) return;
 
     socketRef.current.emit("sendMessage", {
-      firstName: user?.firstName,
-      userId,
+      // firstName: user?.firstName,
+      // userId,
       targetUserId,
       text: messageText,
     });

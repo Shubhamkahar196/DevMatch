@@ -1,17 +1,34 @@
 // import io from 'socket.io-client'
-import BASE_URL from './constant'
+// import BASE_URL from './constant'
 
 // export const createSocketConnection = () =>{
 //     return io(BASE_URL)
 // }
 
 
+// import { io } from "socket.io-client";
+
+// export const createSocketConnection = () => {
+//   if (location.hostname === "localhost") {
+//     return io(BASE_URL);
+//   } else {
+//     return io("/", { path: "/api/socket.io" });
+//   }
+// };
+
+
 import { io } from "socket.io-client";
+import BASE_URL from "./constant";
 
 export const createSocketConnection = () => {
   if (location.hostname === "localhost") {
-    return io(BASE_URL);
+    return io(BASE_URL, {
+      withCredentials: true,
+    });
   } else {
-    return io("/", { path: "/api/socket.io" });
+    return io("/", {
+      path: "/api/socket.io",
+      withCredentials: true,
+    });
   }
 };
