@@ -51,6 +51,10 @@ default: false,
       type: String,
       default: "This is a default about of the user!",
     },
+    lastSeen: {
+        type:Date,
+        default: Date.now()
+    }
 },{
     timestamps: true,
   })

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authMiddleware from "../middleware/auth.middleware.js";
-import { deleteProfile, editProfile, getFeed, getProfile } from "../controllers/user.controller.js";
+import { deleteProfile, editProfile, getFeed, getProfile, getUserStatus } from "../controllers/user.controller.js";
 import {getUserById} from '../controllers/user.controller.js'
 
 const router = Router();
@@ -8,7 +8,8 @@ const router = Router();
 router.get("/get-profile",authMiddleware,getProfile);
 router.put("/edit-profile",authMiddleware,editProfile);
 router.delete("/delete-profile",authMiddleware,deleteProfile);
-router.get("/feed",authMiddleware,getFeed)
+router.get("/feed",authMiddleware,getFeed);
+router.get("/status/:userId",authMiddleware,getUserStatus);
 router.get("/:userId",authMiddleware,getUserById);
 export default router;
 

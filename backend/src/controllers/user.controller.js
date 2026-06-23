@@ -3,6 +3,7 @@ import UserModel from "../models/user.model.js";
 import express from "express";
 import bcrypt from "bcryptjs";
 import ConnectionModel from "../models/connectionRequest.model.js";
+import { onlineUser } from "../utils/onlineUser.js";
 
 // get profile
 export const getProfile = async (req, res) => {
@@ -185,3 +186,28 @@ export const getUserById = async (req, res) => {
     });
   }
 };
+
+// online status
+export const getUserStatus = async(req,res)=>{
+  try {
+    const {userId} = req.params;
+    const user = await UserModel.findById(userId);
+
+    if(!user){
+      return res.status(404).json({
+        message: "User not found"
+      })
+    }
+    const isOnline = onlineUser.has(userId)
+
+    res.status(200).json({
+      isOnline,
+      lastSeen: user.lastSeen
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    })
+    console.log("error",error)
+  }
+}

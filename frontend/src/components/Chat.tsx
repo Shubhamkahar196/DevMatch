@@ -24,6 +24,8 @@ const Chat = () => {
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState<Array<{ senderId: string; firstName: string; text: string; timestamp: any }>>([]);
    
+  const [isOnline,setIsOnline] = useState(false);
+  const [lastSeen,setLastSeen] = useState("");
 
   const socketRef = useRef<ReturnType<typeof import("socket.io-client").io> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -34,6 +36,28 @@ const Chat = () => {
     text: string;
     createdAt?: string;
   };
+
+  const fetchUserStatus = async ()=>{
+    try {
+      const res = await axios.get(BASE_URL + "/user/status/" + targetUserId, {
+        withCredentials: true
+      })
+      setIsOnline(res.data.isOnline);
+      setLastSeen(res.data.lastSeen)
+    } catch (error) {
+      console.log("error in online status",error);
+    }
+  }
+
+  useEffect(()=>{
+    fetchUserStatus();
+
+    const interval = setInterval(()=>{
+      fetchUserStatus();
+    },10000)
+
+    return ()=> clearInterval(interval);
+  },[targetUserId])
 
   const fetchMessages = async () => {
     try {
@@ -58,7 +82,7 @@ const Chat = () => {
       console.log(error);
     }
   };  
-   // todo
+   
       const fetchTargetUser = async()=>{
         try{
          const res = await axios.get(BASE_URL + "/user/"+ targetUserId,{
@@ -164,7 +188,8 @@ socketRef.current.on("connect_error", (err) => {
           {targetUser?.firstName || "Loading..."}
         </h2>
         <p className="text-xs text-indigo-200">
-          Active
+          {isOnline ? "🟢 Online"
+    : `Last Seen ${new Date(lastSeen).toLocaleString()}` }
         </p>
       </div>
 
