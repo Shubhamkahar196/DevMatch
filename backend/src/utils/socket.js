@@ -24,8 +24,8 @@ const initializeSocket = (server) => {
     // User Online
     onlineUser.set(userId, socket.id);
 
-    console.log("Connected:", socket.user.firstName);
-    console.log("Online Users:", onlineUser.size);
+    // console.log("Connected:", socket.user.firstName);
+    // console.log("Online Users:", onlineUser.size);
     // handle event
     // console.log("Connected",socket.user.firstName);
 
@@ -95,7 +95,7 @@ const initializeSocket = (server) => {
           text,
           timestamp: new Date(),
         });
-        console.log("message recievied", firstName + text);
+        // console.log("message recievied", firstName + text);
       } catch (error) {
         console.log(error);
       }

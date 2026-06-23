@@ -4,7 +4,7 @@ import UserModel from "../models/user.model.js";
 const socketAuth = async (socket, next) => {
   try {
     const cookies = socket.handshake.headers.cookie;
-console.log("Cookies =>", cookies);
+// console.log("Cookies =>", cookies);
     if (!cookies) {
       return next(new Error("Authentication Failed"));
     }
@@ -23,7 +23,7 @@ console.log("Cookies =>", cookies);
       token,
       process.env.JWT_SECRET
     );
-    console.log("Decoded =>", decoded);
+    // console.log("Decoded =>", decoded);
 
     const userId = decoded._id || decoded.id;
 
