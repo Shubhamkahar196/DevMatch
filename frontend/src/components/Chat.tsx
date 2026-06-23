@@ -89,7 +89,7 @@ const Chat = () => {
           withCredentials: true
          })
 
-         console.log(res.data.user)
+        //  console.log(res.data.user)
          setTargetUser(res.data.user)
         }catch(error){
 console.log("error in getUserById",error)
@@ -121,7 +121,7 @@ console.log("error in getUserById",error)
 
     socketRef.current = createSocketConnection();
  socketRef.current.on("connect", () => {
-  console.log("Connected");
+  // console.log("Connected");
 });
 
 socketRef.current.on("connect_error", (err) => {
@@ -149,7 +149,7 @@ socketRef.current.on("connect_error", (err) => {
       }
     );
        socketRef.current.on("messageError", (data) => {
-    console.log(data.message);
+    // console.log(data.message);
 
   
 

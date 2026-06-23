@@ -22,7 +22,7 @@ const Connections = () => {
         }
       );
 
-      console.log(res.data.data);
+      // console.log(res.data.data);
       dispatch(addConnection(res.data.data));
     } catch (error: any) {
       console.log(error.message);

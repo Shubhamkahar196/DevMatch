@@ -39,9 +39,10 @@ export const sendRequest = async (req, res) => {
 
 const emailRes = await sendEmail.run(
   "New Connection Request",
-  `${req.user.firstName} sent a connection request to ${receiver.firstName}`
+  `${req.user.firstName} sent you a connection request`,
+  receiver.email
 );
-    console.log(emailRes)
+    // console.log(emailRes)
 
     res.status(201).json({
       success: true,
@@ -106,6 +107,17 @@ export const reviewRequest = async(req,res)=>{
 
     request.status = status;
     await request.save();
+
+    if (status === "ACCEPTED") {
+
+  const senderUser = await UserModel.findById(request.sender);
+
+  await sendEmail.run(
+    "Connection Accepted",
+    `${req.user.firstName} accepted your connection request`,
+    senderUser.email
+  );
+}
 
     res.status(200).json({
   message: "Request reviewed successfully",

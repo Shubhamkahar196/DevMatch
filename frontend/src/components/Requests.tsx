@@ -20,7 +20,7 @@ const Requests = () => {
         { withCredentials: true },
       );
 
-      console.log(res.data);
+      // console.log(res.data);
 
       dispatch(removeRequest(_id));
     } catch (error: any) {
@@ -33,7 +33,7 @@ const Requests = () => {
       const res = await axios.get(BASE_URL + "/request/", {
         withCredentials: true,
       });
-      console.log(res.data.data);
+      // console.log(res.data.data);
       dispatch(addRequest(res.data.data));
     } catch (error) {
       console.log(error);

@@ -50,7 +50,7 @@ const UserCard = ({
         }
       );
 
-      console.log(res.data);
+      // console.log(res.data);
 
       // Remove acted user from feed
       dispatch(removeFeed(userId));
