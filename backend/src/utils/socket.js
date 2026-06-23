@@ -40,7 +40,7 @@ const initializeSocket = (server) => {
       const userId = socket.user._id;
       const roomId = [userId, targetUserId].sort().join("_");
 
-      console.log("joinroom " + roomId);
+    //   console.log("joinroom " + roomId);
       socket.join(roomId);
     });
 
@@ -109,15 +109,15 @@ const initializeSocket = (server) => {
                 userId,
                 { lastSeen: new Date(),}
             )
-            console.log(
-            "Disconnected:",
-            socket.user.firstName
-          );
+        //     console.log(
+        //     "Disconnected:",
+        //     socket.user.firstName
+        //   );
 
-          console.log(
-            "Online Users:",
-            onlineUsers.size
-          );
+        //   console.log(
+        //     "Online Users:",
+        //     onlineUsers.size
+        //   );
         } catch (error) {
             console.log(error);
         }
