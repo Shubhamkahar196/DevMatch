@@ -136,7 +136,7 @@ socketRef.current.on("connect_error", (err) => {
     socketRef.current.on(
       "messageReceived",
       ({ firstName, senderId, text, timestamp }) => {
- console.log("Message Received:", text);
+//  console.log("Message Received:", text);
         setMessages((prev) => [
           ...prev,
           {
