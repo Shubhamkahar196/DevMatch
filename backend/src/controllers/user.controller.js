@@ -1,118 +1,111 @@
 import { success } from "zod";
 import UserModel from "../models/user.model.js";
-import express from 'express';
+import express from "express";
 import bcrypt from "bcryptjs";
 import ConnectionModel from "../models/connectionRequest.model.js";
 
-
 // get profile
-export const getProfile = async (req,res)=>{
-   try {
-    if(!req.user){
-        return res.status(401).json({
-            success: false,
-            message: "Unauthorized"
-        })
+export const getProfile = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
     }
-    // user already middleware se aa chuka hai 
+    // user already middleware se aa chuka hai
     const user = req.user;
     res.status(200).json({
-        success: true,
-        user
+      success: true,
+      user,
     });
-   } catch (error) {
+  } catch (error) {
     res.status(500).json({
-        success: false,
-        message: error.message
-    })
-   }
-}
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 // edit profile
-export const editProfile = async(req,res)=>{
-    try {
-        if(!req.user){
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorize user"
-            })
-        }
+export const editProfile = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorize user",
+      });
+    }
 
-        const allowedFields = [
-            "firstName",
-            "lastName",
-            "age",
-            "photoUrl",
-            "about",
-            "phoneNumber",
-            "gender",
-            
-        ]
+    const allowedFields = [
+      "firstName",
+      "lastName",
+      "age",
+      "photoUrl",
+      "about",
+      "phoneNumber",
+      "gender",
+    ];
 
-        const updateData = {};
-        // sirf wahi fields jo user ne bheji
-        allowedFields.forEach((field)=>{
-            if(req.body[field] !== undefined){
-                updateData[field] = req.body[field];
-            }
-        })
+    const updateData = {};
+    // sirf wahi fields jo user ne bheji
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
 
-      
-
-    const updatedProfile =  await UserModel.findByIdAndUpdate(
-        req.user._id,
-        updateData,
-        {returnDocument: "after"}
+    const updatedProfile = await UserModel.findByIdAndUpdate(
+      req.user._id,
+      updateData,
+      { returnDocument: "after" },
     ).select("-password");
 
     res.status(200).json({
-        success:true,
-        message: "Updated profile successfully",
-        user: updatedProfile
-    })
-    } catch (error) {
-         console.log("Error updating profile:", error);
+      success: true,
+      message: "Updated profile successfully",
+      user: updatedProfile,
+    });
+  } catch (error) {
+    console.log("Error updating profile:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
-    }
-}
-
+  }
+};
 
 // delete profile
 
-export const deleteProfile = async(req,res)=>{
-    try {
-        if(!req.user){
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized user"
-            })
-        }
-        const deletedUser = await UserModel.findByIdAndDelete(
-            req.user._id
-        )
-        if(!deletedUser) {
-      return res.status(404).json({
+export const deleteProfile = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
         success: false,
-        message: "User not found"
+        message: "Unauthorized user",
       });
     }
-       res.clearCookie("token");
-
-        res.status(200).json({
-            success: true,
-            message: "User delete successfully"
-        })
-    } catch (error) {
-        console.log("Error during deleting profile",error);
-        res.status(500).json({
-            success: false,
-            message: "Internal server problem"
-        })
+    const deletedUser = await UserModel.findByIdAndDelete(req.user._id);
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
-}
+    res.clearCookie("token");
+
+    res.status(200).json({
+      success: true,
+      message: "User delete successfully",
+    });
+  } catch (error) {
+    console.log("Error during deleting profile", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server problem",
+    });
+  }
+};
 
 // feed
 
@@ -128,10 +121,7 @@ export const getFeed = async (req, res) => {
 
     //  find all connections
     const connections = await ConnectionModel.find({
-      $or: [
-        { sender: loggedInUser._id },
-        { receiver: loggedInUser._id }
-      ]
+      $or: [{ sender: loggedInUser._id }, { receiver: loggedInUser._id }],
     }).select("sender receiver");
 
     //  build hide list
@@ -147,7 +137,7 @@ export const getFeed = async (req, res) => {
 
     //  get feed users
     const users = await UserModel.find({
-      _id: { $nin: Array.from(hideUsers) }
+      _id: { $nin: Array.from(hideUsers) },
     })
       .select("firstName lastName age gender photoUrl about")
       .skip(skip)
@@ -155,15 +145,43 @@ export const getFeed = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: users
+      data: users,
     });
-
   } catch (err) {
     console.log("Feed error:", err);
 
     res.status(500).json({
       success: false,
-      message: err.message
+      message: err.message,
+    });
+  }
+};
+
+// getuserbyid
+
+export const getUserById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await UserModel.findById(userId).select(
+      "firstName lastName photoUrl",
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };

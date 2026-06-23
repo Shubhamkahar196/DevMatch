@@ -19,9 +19,11 @@ const Chat = () => {
 
   const user = useSelector((store: RootState) => store.user);
   const userId = user?._id;
+   const [targetUser,setTargetUser] = useState<any>(null)
 
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState<Array<{ senderId: string; firstName: string; text: string; timestamp: any }>>([]);
+   
 
   const socketRef = useRef<ReturnType<typeof import("socket.io-client").io> | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -55,11 +57,30 @@ const Chat = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  };  
+   // todo
+      const fetchTargetUser = async()=>{
+        try{
+         const res = await axios.get(BASE_URL + "/user/"+ targetUserId,{
+          withCredentials: true
+         })
+
+         console.log(res.data.user)
+         setTargetUser(res.data.user)
+        }catch(error){
+console.log("error in getUserById",error)
+        }
+      }
 
   useEffect(() => {
     fetchMessages();
   }, [targetUserId]);
+
+  useEffect(()=>{
+    if(targetUserId){
+      fetchTargetUser();
+    }
+  },[targetUserId]);
 
   // Auto scroll
   useEffect(() => {
@@ -128,6 +149,7 @@ socketRef.current.on("connect_error", (err) => {
     setMessageText("");
   };
 
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sendMessage();
@@ -139,7 +161,7 @@ socketRef.current.on("connect_error", (err) => {
       {/* Header */}
       <div className="px-6 py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white">
         <h2 className="font-semibold text-lg">
-          {user?.firstName}
+          {targetUser?.firstName || "Loading..."}
         </h2>
         <p className="text-xs text-indigo-200">
           Active
