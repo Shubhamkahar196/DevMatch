@@ -181,7 +181,7 @@ socketRef.current.on("connect_error", (err) => {
 
   return (
     <div className="max-w-3xl mx-auto my-6 h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
-
+<div className="h-[calc(100vh-140px)] sm:h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white">
         <h2 className="font-semibold text-lg">
@@ -267,8 +267,10 @@ socketRef.current.on("connect_error", (err) => {
           Send
         </button>
       </form>
+      </div>
     </div>
   );
 };
 
 export default Chat;
+
