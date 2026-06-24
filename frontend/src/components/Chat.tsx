@@ -19,15 +19,19 @@ const Chat = () => {
 
   const user = useSelector((store: RootState) => store.user);
   const userId = user?._id;
-   const [targetUser,setTargetUser] = useState<any>(null)
+  const [targetUser, setTargetUser] = useState<any>(null);
 
   const [messageText, setMessageText] = useState("");
-  const [messages, setMessages] = useState<Array<{ senderId: string; firstName: string; text: string; timestamp: any }>>([]);
-   
-  const [isOnline,setIsOnline] = useState(false);
-  const [lastSeen,setLastSeen] = useState("");
+  const [messages, setMessages] = useState<
+    Array<{ senderId: string; firstName: string; text: string; timestamp: any }>
+  >([]);
 
-  const socketRef = useRef<ReturnType<typeof import("socket.io-client").io> | null>(null);
+  const [isOnline, setIsOnline] = useState(false);
+  const [lastSeen, setLastSeen] = useState("");
+
+  const socketRef = useRef<ReturnType<
+    typeof import("socket.io-client").io
+  > | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch old messages
@@ -37,38 +41,37 @@ const Chat = () => {
     createdAt?: string;
   };
 
-  const fetchUserStatus = async ()=>{
+  const fetchUserStatus = async () => {
     try {
       const res = await axios.get(BASE_URL + "/user/status/" + targetUserId, {
-        withCredentials: true
-      })
+        withCredentials: true,
+      });
       setIsOnline(res.data.isOnline);
-      setLastSeen(res.data.lastSeen)
+      setLastSeen(res.data.lastSeen);
     } catch (error) {
-      console.log("error in online status",error);
+      console.log("error in online status", error);
     }
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchUserStatus();
 
-    const interval = setInterval(()=>{
+    const interval = setInterval(() => {
       fetchUserStatus();
-    },10000)
+    }, 10000);
 
-    return ()=> clearInterval(interval);
-  },[targetUserId])
+    return () => clearInterval(interval);
+  }, [targetUserId]);
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(
-        BASE_URL + "/chat/" + targetUserId,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.get(BASE_URL + "/chat/" + targetUserId, {
+        withCredentials: true,
+      });
 
-      const rawMessages = res.data?.chat?.messages as BackendMessage[] | undefined;
+      const rawMessages = res.data?.chat?.messages as
+        | BackendMessage[]
+        | undefined;
 
       const chatMessages = (rawMessages ?? []).map((msg) => ({
         senderId: msg.senderId?._id,
@@ -81,30 +84,30 @@ const Chat = () => {
     } catch (error) {
       console.log(error);
     }
-  };  
-   
-      const fetchTargetUser = async()=>{
-        try{
-         const res = await axios.get(BASE_URL + "/user/"+ targetUserId,{
-          withCredentials: true
-         })
+  };
 
-        //  console.log(res.data.user)
-         setTargetUser(res.data.user)
-        }catch(error){
-console.log("error in getUserById",error)
-        }
-      }
+  const fetchTargetUser = async () => {
+    try {
+      const res = await axios.get(BASE_URL + "/user/" + targetUserId, {
+        withCredentials: true,
+      });
+
+      //  console.log(res.data.user)
+      setTargetUser(res.data.user);
+    } catch (error) {
+      console.log("error in getUserById", error);
+    }
+  };
 
   useEffect(() => {
     fetchMessages();
   }, [targetUserId]);
 
-  useEffect(()=>{
-    if(targetUserId){
+  useEffect(() => {
+    if (targetUserId) {
       fetchTargetUser();
     }
-  },[targetUserId]);
+  }, [targetUserId]);
 
   // Auto scroll
   useEffect(() => {
@@ -113,20 +116,18 @@ console.log("error in getUserById",error)
     });
   }, [messages]);
 
- 
-
   // Socket Connection
   useEffect(() => {
     if (!userId || !targetUserId) return;
 
     socketRef.current = createSocketConnection();
- socketRef.current.on("connect", () => {
-  // console.log("Connected");
-});
+    socketRef.current.on("connect", () => {
+      // console.log("Connected");
+    });
 
-socketRef.current.on("connect_error", (err) => {
-  console.log(err.message);
-});
+    socketRef.current.on("connect_error", (err) => {
+      console.log(err.message);
+    });
     socketRef.current.emit("joinChat", {
       // firstName: user?.firstName,
       // userId,
@@ -136,7 +137,7 @@ socketRef.current.on("connect_error", (err) => {
     socketRef.current.on(
       "messageReceived",
       ({ firstName, senderId, text, timestamp }) => {
-//  console.log("Message Received:", text);
+        //  console.log("Message Received:", text);
         setMessages((prev) => [
           ...prev,
           {
@@ -146,15 +147,13 @@ socketRef.current.on("connect_error", (err) => {
             timestamp: timestamp || new Date(),
           },
         ]);
-      }
+      },
     );
-       socketRef.current.on("messageError", (data) => {
-    // console.log(data.message);
+    socketRef.current.on("messageError", (data) => {
+      // console.log(data.message);
 
-  
-
-    alert(data.message);
-  });
+      alert(data.message);
+    });
     return () => {
       socketRef.current?.disconnect();
     };
@@ -173,117 +172,23 @@ socketRef.current.on("connect_error", (err) => {
     setMessageText("");
   };
 
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sendMessage();
   };
 
-  // return (
-//     <div className="max-w-3xl mx-auto my-6 h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
-// <div className="h-[calc(100vh-140px)] sm:h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
-//       {/* Header */}
-//       <div className="px-6 py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white">
-//         <h2 className="font-semibold text-lg">
-//           {targetUser?.firstName || "Loading..."}
-//         </h2>
-//         <p className="text-xs text-indigo-200">
-//           {isOnline ? "🟢 Online"
-//     : `Last Seen ${new Date(lastSeen).toLocaleString()}` }
-//         </p>
-//       </div>
-
-//       {/* Messages */}
-//       <div className="flex-1 overflow-y-auto p-4 bg-slate-50">
-
-//         {messages.length === 0 ? (
-//           <div className="h-full flex justify-center items-center text-slate-400">
-//             No messages yet
-//           </div>
-//         ) : (
-//           messages.map((msg, index) => {
-//             const isMe =
-//               msg.senderId?.toString() ===
-//               userId?.toString();
-
-//             return (
-//               <div
-//                 key={index}
-//                 className={`chat ${
-//                   isMe ? "chat-end" : "chat-start"
-//                 } mb-3`}
-//               >
-//                 <div className="chat-header text-xs text-gray-500">
-//                   {msg.firstName}
-//                 </div>
-
-//                 <div
-//                   className={`chat-bubble ${
-//                     isMe
-//                       ? "chat-bubble-primary"
-//                       : "chat-bubble-neutral"
-//                   }`}
-//                 >
-//                   {msg.text}
-//                 </div>
-
-//                 <div className="chat-footer text-xs opacity-60">
-//                   {msg.timestamp
-//                     ? new Date(
-//                         msg.timestamp
-//                       ).toLocaleTimeString([], {
-//                         hour: "2-digit",
-//                         minute: "2-digit",
-//                       })
-//                     : ""}
-//                 </div>
-//               </div>
-//             );
-//           })
-//         )}
-
-//         <div ref={messagesEndRef}></div>
-//       </div>
-
-     
-//       <form
-//         onSubmit={handleSubmit}
-//         className="p-4 border-t bg-white flex gap-2"
-//       >
-//         <input
-//           type="text"
-//           placeholder="Type a message..."
-//           value={messageText}
-//           onChange={(e) =>
-//             setMessageText(e.target.value)
-//           }
-//           className="flex-1 border border-slate-300 text-black rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//         />
-
-//         <button
-//           type="submit"
-//           className="px-5 py-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700"
-//         >
-//           Send
-//         </button>
-//       </form>
-//       </div>
-//     </div>
-
-{/* FIXED MARGINS FOR MOBILE OVERLAPS: Added mt-16 (to clear navbar) and mb-24 (to clear footer) */}
- return (  
- <div className="w-full max-w-3xl mx-auto mt-16 mb-24 sm:my-6 px-2 sm:px-0">
-      
-      {/* FIXED MOBILE CONTAINER HEIGHT: Changed calc from -140px to -170px so the layout doesn't overflow */}
+  return (
+    <div className="w-full max-w-3xl mx-auto mt-16 mb-24 sm:my-6 px-2 sm:px-0">
       <div className="h-[calc(100vh-170px)] sm:h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
-        
         {/* Header */}
         <div className="px-4 py-3 sm:px-6 sm:py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white shrink-0">
           <h2 className="font-semibold text-base sm:text-lg">
             {targetUser?.firstName || "Loading..."}
           </h2>
           <p className="text-[10px] sm:text-xs text-indigo-200">
-            {isOnline ? "🟢 Online" : `Last Seen ${new Date(lastSeen).toLocaleString()}`}
+            {isOnline
+              ? "🟢 Online"
+              : `Last Seen ${new Date(lastSeen).toLocaleString()}`}
           </p>
         </div>
 
@@ -307,7 +212,7 @@ socketRef.current.on("connect_error", (err) => {
                   </div>
 
                   <div
-                    className={`chat-bubble text-sm sm:text-base max-w-[85%] break-words ${
+                    className={`chat-bubble text-sm sm:text-base max-w-[85%] wrap-break-word ${
                       isMe ? "chat-bubble-primary" : "chat-bubble-neutral"
                     }`}
                   >
@@ -355,4 +260,3 @@ socketRef.current.on("connect_error", (err) => {
 };
 
 export default Chat;
-

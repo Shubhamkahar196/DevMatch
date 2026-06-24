@@ -1,9 +1,7 @@
 import React from "react";
 
-
 const Footer = () => {
  
-
   return (
     <footer className="footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4 fixed bottom-0 left-0 w-full z-50">
       <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-4">
