@@ -179,94 +179,176 @@ socketRef.current.on("connect_error", (err) => {
     sendMessage();
   };
 
-  return (
-    <div className="max-w-3xl mx-auto my-6 h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
-<div className="h-[calc(100vh-140px)] sm:h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
-      {/* Header */}
-      <div className="px-6 py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white">
-        <h2 className="font-semibold text-lg">
-          {targetUser?.firstName || "Loading..."}
-        </h2>
-        <p className="text-xs text-indigo-200">
-          {isOnline ? "🟢 Online"
-    : `Last Seen ${new Date(lastSeen).toLocaleString()}` }
-        </p>
-      </div>
+  // return (
+//     <div className="max-w-3xl mx-auto my-6 h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
+// <div className="h-[calc(100vh-140px)] sm:h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
+//       {/* Header */}
+//       <div className="px-6 py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white">
+//         <h2 className="font-semibold text-lg">
+//           {targetUser?.firstName || "Loading..."}
+//         </h2>
+//         <p className="text-xs text-indigo-200">
+//           {isOnline ? "🟢 Online"
+//     : `Last Seen ${new Date(lastSeen).toLocaleString()}` }
+//         </p>
+//       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 bg-slate-50">
+//       {/* Messages */}
+//       <div className="flex-1 overflow-y-auto p-4 bg-slate-50">
 
-        {messages.length === 0 ? (
-          <div className="h-full flex justify-center items-center text-slate-400">
-            No messages yet
-          </div>
-        ) : (
-          messages.map((msg, index) => {
-            const isMe =
-              msg.senderId?.toString() ===
-              userId?.toString();
+//         {messages.length === 0 ? (
+//           <div className="h-full flex justify-center items-center text-slate-400">
+//             No messages yet
+//           </div>
+//         ) : (
+//           messages.map((msg, index) => {
+//             const isMe =
+//               msg.senderId?.toString() ===
+//               userId?.toString();
 
-            return (
-              <div
-                key={index}
-                className={`chat ${
-                  isMe ? "chat-end" : "chat-start"
-                } mb-3`}
-              >
-                <div className="chat-header text-xs text-gray-500">
-                  {msg.firstName}
-                </div>
+//             return (
+//               <div
+//                 key={index}
+//                 className={`chat ${
+//                   isMe ? "chat-end" : "chat-start"
+//                 } mb-3`}
+//               >
+//                 <div className="chat-header text-xs text-gray-500">
+//                   {msg.firstName}
+//                 </div>
 
-                <div
-                  className={`chat-bubble ${
-                    isMe
-                      ? "chat-bubble-primary"
-                      : "chat-bubble-neutral"
-                  }`}
-                >
-                  {msg.text}
-                </div>
+//                 <div
+//                   className={`chat-bubble ${
+//                     isMe
+//                       ? "chat-bubble-primary"
+//                       : "chat-bubble-neutral"
+//                   }`}
+//                 >
+//                   {msg.text}
+//                 </div>
 
-                <div className="chat-footer text-xs opacity-60">
-                  {msg.timestamp
-                    ? new Date(
-                        msg.timestamp
-                      ).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                    : ""}
-                </div>
-              </div>
-            );
-          })
-        )}
+//                 <div className="chat-footer text-xs opacity-60">
+//                   {msg.timestamp
+//                     ? new Date(
+//                         msg.timestamp
+//                       ).toLocaleTimeString([], {
+//                         hour: "2-digit",
+//                         minute: "2-digit",
+//                       })
+//                     : ""}
+//                 </div>
+//               </div>
+//             );
+//           })
+//         )}
 
-        <div ref={messagesEndRef}></div>
-      </div>
+//         <div ref={messagesEndRef}></div>
+//       </div>
 
      
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 border-t bg-white flex gap-2"
-      >
-        <input
-          type="text"
-          placeholder="Type a message..."
-          value={messageText}
-          onChange={(e) =>
-            setMessageText(e.target.value)
-          }
-          className="flex-1 border border-slate-300 text-black rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+//       <form
+//         onSubmit={handleSubmit}
+//         className="p-4 border-t bg-white flex gap-2"
+//       >
+//         <input
+//           type="text"
+//           placeholder="Type a message..."
+//           value={messageText}
+//           onChange={(e) =>
+//             setMessageText(e.target.value)
+//           }
+//           className="flex-1 border border-slate-300 text-black rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+//         />
 
-        <button
-          type="submit"
-          className="px-5 py-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700"
+//         <button
+//           type="submit"
+//           className="px-5 py-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700"
+//         >
+//           Send
+//         </button>
+//       </form>
+//       </div>
+//     </div>
+
+{/* FIXED MARGINS FOR MOBILE OVERLAPS: Added mt-16 (to clear navbar) and mb-24 (to clear footer) */}
+ return (  
+ <div className="w-full max-w-3xl mx-auto mt-16 mb-24 sm:my-6 px-2 sm:px-0">
+      
+      {/* FIXED MOBILE CONTAINER HEIGHT: Changed calc from -140px to -170px so the layout doesn't overflow */}
+      <div className="h-[calc(100vh-170px)] sm:h-[80vh] flex flex-col border border-slate-200 rounded-2xl shadow-xl bg-white overflow-hidden">
+        
+        {/* Header */}
+        <div className="px-4 py-3 sm:px-6 sm:py-4 bg-linear-to-r from-indigo-600 to-violet-600 text-white shrink-0">
+          <h2 className="font-semibold text-base sm:text-lg">
+            {targetUser?.firstName || "Loading..."}
+          </h2>
+          <p className="text-[10px] sm:text-xs text-indigo-200">
+            {isOnline ? "🟢 Online" : `Last Seen ${new Date(lastSeen).toLocaleString()}`}
+          </p>
+        </div>
+
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 bg-slate-50">
+          {messages.length === 0 ? (
+            <div className="h-full flex justify-center items-center text-slate-400 text-sm">
+              No messages yet
+            </div>
+          ) : (
+            messages.map((msg, index) => {
+              const isMe = msg.senderId?.toString() === userId?.toString();
+
+              return (
+                <div
+                  key={index}
+                  className={`chat ${isMe ? "chat-end" : "chat-start"} mb-3`}
+                >
+                  <div className="chat-header text-[10px] sm:text-xs text-gray-500">
+                    {msg.firstName}
+                  </div>
+
+                  <div
+                    className={`chat-bubble text-sm sm:text-base max-w-[85%] break-words ${
+                      isMe ? "chat-bubble-primary" : "chat-bubble-neutral"
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+
+                  <div className="chat-footer text-[10px] sm:text-xs opacity-60">
+                    {msg.timestamp
+                      ? new Date(msg.timestamp).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : ""}
+                  </div>
+                </div>
+              );
+            })
+          )}
+          <div ref={messagesEndRef}></div>
+        </div>
+
+        {/* Input Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="p-3 sm:p-4 border-t bg-white flex gap-2 items-center shrink-0"
         >
-          Send
-        </button>
-      </form>
+          <input
+            type="text"
+            placeholder="Type a message..."
+            value={messageText}
+            onChange={(e) => setMessageText(e.target.value)}
+            className="flex-1 border border-slate-300 text-black rounded-full px-4 py-2 sm:py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+
+          <button
+            type="submit"
+            className="px-4 py-2 sm:px-5 sm:py-3 rounded-full bg-indigo-600 text-white text-sm sm:text-base hover:bg-indigo-700 font-medium transition-colors"
+          >
+            Send
+          </button>
+        </form>
       </div>
     </div>
   );
