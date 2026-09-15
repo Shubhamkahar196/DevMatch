@@ -25,9 +25,12 @@ const PORT = 8000
 import("./utils/cron-job.js")
 
 app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
-}))
+  origin: [
+    "http://localhost:5173",
+    "https://www.devmatch.website"
+  ],
+  credentials: true
+}));
 app.use(cookieParser());
 app.use(express.json());
 
