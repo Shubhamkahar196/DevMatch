@@ -11,6 +11,8 @@ const authMiddleware = async (req, res, next) => {
 console.log("COOKIES:", req.cookies);
 console.log("AUTH HEADER:", authHeader);
 console.log("TOKEN:", token);
+console.log("RAW COOKIE:", req.headers.cookie);
+console.log("PARSED COOKIE:", req.cookies);
     if (!token) {
       return res.status(401).json({
         success: false,
