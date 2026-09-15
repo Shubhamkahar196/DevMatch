@@ -24,13 +24,24 @@ connectDb();
 const PORT = 8000
 import("./utils/cron-job.js")
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://www.devmatch.website"
-  ],
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://www.devmatch.website",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(cookieParser());
 app.use(express.json());
 
