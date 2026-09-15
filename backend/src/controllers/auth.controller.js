@@ -80,7 +80,7 @@ export const Signup = async (req, res) => {
     });
 
     // Generate JWT token
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
@@ -88,7 +88,7 @@ export const Signup = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -153,7 +153,7 @@ export const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       sameSite: "lax",
-      secure: false,
+      secure:true ,
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
 
