@@ -6,7 +6,11 @@ const authMiddleware = async (req, res, next) => {
     const authHeader = req.header("Authorization");
     const token =
       req.cookies?.token || (authHeader ? authHeader.split(" ")[1] : null);
-
+      
+      console.log("PATH:", req.originalUrl);
+console.log("COOKIES:", req.cookies);
+console.log("AUTH HEADER:", authHeader);
+console.log("TOKEN:", token);
     if (!token) {
       return res.status(401).json({
         success: false,
