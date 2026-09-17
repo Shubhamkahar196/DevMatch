@@ -21,9 +21,9 @@ console.log("PARSED COOKIE:", req.cookies);
     }
 
     // verify token
-    const decoded =  jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 
-    const userId = decoded._id;
+    const userId = decoded.id;
 
     // find user
     const user = await UserModel.findById(userId).select("-password");

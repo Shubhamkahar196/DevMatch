@@ -26,7 +26,13 @@ const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
+  const validatePassword = (pass: string) => {
+    // Requires: >=1 Uppercase, >=1 Lowercase, >=1 Special Char, >=1 Number, Min 8 chars
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!\%*?&]{8,}$/;
+    return passwordRegex.test(pass);
+  };
   const handleLogin = async () => {
+    setError("")
     try {
       const res = await axios.post(
         BASE_URL + "/auth/login",
@@ -38,13 +44,22 @@ const Login = () => {
       return navigate("/");
       
     } catch (error) {
-      const err = error as AxiosError;
-      setError(err.message);
-      console.log(error);
+      const err = error as AxiosError<{message?: string}>;
+      const customErr = err.response?.data?.message || err.message || "Something went wrong";
+      setError(customErr);
     }
   };
 
   const handleSingup = async ()=>{
+    setError("");
+    // custom validation check before calling backend
+
+    if(!validatePassword(password)){
+      setError(
+        "Please use 1 Upperecase,1 lowercase,1 special character,1 number, and minimum 8 characters."
+      );
+      return;
+    }
     try {
       const res = await axios.post(BASE_URL + "/auth/signup",{firstName,lastName,email,password},
         {withCredentials: true}

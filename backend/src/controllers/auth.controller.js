@@ -27,15 +27,8 @@ const signupSchema = z.object({
 });
 
 const loginSchema = z.object({
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .max(12, "Password not more than 12 characters")
-    .regex(/[A-Z]/, "Must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Must contain at least one number")
-    .regex(/[^A-Za-z0-9]/, "Must contain at least one special character"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"), // Login par exact regex condition enforce nahi karni chahiye
 });
 
 // signup
@@ -47,7 +40,7 @@ export const Signup = async (req, res) => {
     if (!parsedData.success) {
       return res.status(400).json({
         success: false,
-        message: "Invalid data",
+        message: parsedData.error.errors[0].message,
         errors: parsedData.error.errors,
       });
     }
@@ -107,6 +100,7 @@ export const Signup = async (req, res) => {
   } catch (error) {
     console.log("Error during signup", error);
 
+
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -120,7 +114,7 @@ export const login = async (req, res) => {
     const parsedData = loginSchema.safeParse(req.body);
     if (!parsedData.success) {
       return res.status(400).json({
-        message: "Invalid credentials",
+        message: parsedData.error.errors[0].message,
       });
     }
 
@@ -142,7 +136,7 @@ export const login = async (req, res) => {
     );
     if (!passwordMatched) {
       return res.status(403).json({
-        message: "Password incorrect",
+        message: "Please check your password. It must contain an uppercase letter, lowercase letter, number, and special symbol.",
       });
     }
 
